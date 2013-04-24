@@ -6,7 +6,8 @@
 		, "access_secret" : "YOUR TWITTER ACCESS SECRET"
 		, "query" : {
 			"track" : "AN ARRAY OF WORDS TO SEARCH FOR"
-			, "locations" : "AN ARRAY OF LAT/LNG PARAMETERS"
+			, "locations" : "AN ARRAY OF LNG/LAT PARAMETERS"
+			, "language" : "A TWO LETTER LANGUAGE CODE"
 		}
 	}
 	, "websocket" : {

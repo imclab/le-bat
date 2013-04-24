@@ -15,9 +15,19 @@ function TwitterStream(options){
     events.EventEmitter.call(this);
 
     // build the query url
-    this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?delimited=length';
-    if(options.query.track) this.url += '&track=' + options.query.track.join(',');
-    if(options.query.locations) this.url += '&locations=' + options.query.locations.join(',');
+    this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?';
+    var firstParam = true;
+    for(param in options.query){
+    	if(!firstParam) this.url += '&';
+
+    	if(param == "filter_level") this.url += 'filter_level=' + options.query.filter_level;
+    	if(param == "track") this.url += 'track=' + options.query.track.join(',');
+    	if(param == "locations") this.url += 'locations=' + options.query.locations.join(',');
+    	if(param == "language") this.url += 'language=' + options.query.language;
+
+    	if(firstParam) firstParam = false;
+    }
+
 
     console.log(this.url);
 
