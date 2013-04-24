@@ -1,5 +1,8 @@
 var conf = require('../config')
-,	TwitterStream = require('./lib/TwitterStream');
+,	TwitterStream = require('./lib/TwitterStream')
+,	WebSocketServer = require('./lib/websocketServer');
+
+var server = new WebSocketServer({port : conf.websocket.port});
 
 var tweetStream = new TwitterStream({
 	query : conf.twitter.query
@@ -10,7 +13,16 @@ var tweetStream = new TwitterStream({
 });
 
 tweetStream.on('tweet',function(data){
-	console.log(data.text);
+	
+	// we need specific coordinates!
+	if(data.coordinates){
+		server.broadcast({
+			sound_key : ~~(Math.random()*100)+1 // fine as result fits into 32-bit and will be changed later anyway
+			, location : data.coordinates.coordinates
+			, timestamp : +new Date
+			, tweet : data.id_str
+		});
+	}
 });
 
 tweetStream.on('error',function(err){
