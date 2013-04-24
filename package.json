@@ -19,5 +19,6 @@
   , "dependencies": {
   		"forever-monitor" : "1.2.1"
       , "oauth" : "0.9.7"
+      , "ws" : "0.4.25"
   }
 }
