@@ -13,4 +13,8 @@ tweetStream.on('tweet',function(data){
 	console.log(data.text);
 });
 
+tweetStream.on('error',function(err){
+	console.log(err);
+});
+
 tweetStream.connect();

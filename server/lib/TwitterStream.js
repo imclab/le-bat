@@ -24,14 +24,9 @@ function TwitterStream(options){
     this.accessToken = options.accessToken;
     this.accessSecret = options.accessSecret;
     
-    this.streamReader = new StreamReader({
-		'sizeLength' : 6
-    	, 'sizeReader' : function(buffer){
-    		return parseInt(buffer.toString('utf8',0,4));
-    	}
-	});
-
-    this.registerDataHandler();
+    // create the streamreader and register the event handler
+    this.streamReader = new StreamReader();
+    this.registerEventHandlers();
 
 	this.twitterLogin = new OAuth(
 		'https://twitter.com/oauth/request_token'
@@ -62,16 +57,15 @@ TwitterStream.prototype.connect = function(query){
 	self.request.end();
 };
 
-TwitterStream.prototype.registerDataHandler = function(){
+TwitterStream.prototype.registerEventHandlers = function(){
 	var self = this;
+
 	this.streamReader.on('data',function(data){
-		data = data.toString('utf8',6);
-		try{
-			var json = JSON.parse(data);
-			self.emit('tweet',json);
-		} catch(err){
-			console.log(err);
-		}
+		self.emit('tweet',data);
+	});
+
+	this.streamReader.on('error',function(err){
+		self.emit('error',err);
 	});
 }
 
