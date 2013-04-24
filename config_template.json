@@ -4,6 +4,10 @@
 		, "consumer_secret" : "YOUR TWITTER CONSUMER SECRET"
 		, "access_token" : "YOUR TWITTER ACCESS TOKEN"
 		, "access_secret" : "YOUR TWITTER ACCESS SECRET"
+		, "query" : {
+			"track" : "AN ARRAY OF WORDS TO SEARCH FOR"
+			, "locations" : "AN ARRAY OF LAT/LNG PARAMETERS"
+		}
 	}
 	, "websocket" : {
 		"port" : "THE PORT OF THE WEBSOCKET"

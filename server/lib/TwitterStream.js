@@ -7,14 +7,20 @@ module.exports = TwitterStream;
 
 function TwitterStream(options){
 
-	if(!options.consumerKey || !options.consumerSecret || !options.accessToken || !options.accessSecret){
+	if(!options.consumerKey || !options.consumerSecret || !options.accessToken || !options.accessSecret || !options.query){
 		// throw error
-		console.log("incomplete!");
+		console.log('incomplete!');
 	}
 
     events.EventEmitter.call(this);
 
-    this.url = "https://stream.twitter.com/1.1/statuses/filter.json?delimited=length&track=Berlin";
+    // build the query url
+    this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?delimited=length';
+    if(options.query.track) this.url += '&track=' + options.query.track.join(',');
+    if(options.query.locations) this.url += '&locations=' + options.query.locations.join(',');
+
+    console.log(this.url);
+
     this.accessToken = options.accessToken;
     this.accessSecret = options.accessSecret;
     
@@ -28,13 +34,13 @@ function TwitterStream(options){
     this.registerDataHandler();
 
 	this.twitterLogin = new OAuth(
-		"https://twitter.com/oauth/request_token"
-        , "https://twitter.com/oauth/access_token"
+		'https://twitter.com/oauth/request_token'
+        , 'https://twitter.com/oauth/access_token'
         , options.consumerKey
         , options.consumerSecret
-        , "1.0A"
+        , '1.0A'
         , null
-        , "HMAC-SHA1"
+        , 'HMAC-SHA1'
     );
 }
 
