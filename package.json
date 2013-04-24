@@ -1,0 +1,23 @@
+{
+  "name": "tweeting-natural-server"
+  , "private": true
+  , "author": "fde31 & mb"
+  , "contributors": [
+      {
+        "name": "Florian Demmer"
+      }
+      , {
+        "name": "Martin Bilsing"
+      }
+    ]
+  , "scripts": {
+  		"start": "node app.js"
+  }
+  , "engines": {
+      "node": ">=0.10.0"
+  }
+  , "dependencies": {
+  		"forever-monitor" : "1.2.1"
+      , "oauth" : "0.9.7"
+  }
+}
