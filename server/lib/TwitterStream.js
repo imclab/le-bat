@@ -12,41 +12,37 @@ function TwitterStream(options){
 		console.log('incomplete!');
 	}
 
-    events.EventEmitter.call(this);
+	events.EventEmitter.call(this);
 
-    // build the query url
-    this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?';
-    var firstParam = true;
-    for(param in options.query){
-    	if(!firstParam) this.url += '&';
+	// build the query url
+	this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?';
+	var params = []
+	for(param in options.query){
+		if(param == "filter_level") params.push('filter_level=' + options.query.filter_level);
+		if(param == "track") params.push('track=' + options.query.track.join(','));
+		if(param == "locations") params.push('locations=' + options.query.locations.join(','));
+		if(param == "language") params.push('language=' + options.query.language);
+	}
+	this.url += params.join('&');
 
-    	if(param == "filter_level") this.url += 'filter_level=' + options.query.filter_level;
-    	if(param == "track") this.url += 'track=' + options.query.track.join(',');
-    	if(param == "locations") this.url += 'locations=' + options.query.locations.join(',');
-    	if(param == "language") this.url += 'language=' + options.query.language;
+	console.log(this.url);
 
-    	if(firstParam) firstParam = false;
-    }
-
-
-    console.log(this.url);
-
-    this.accessToken = options.accessToken;
-    this.accessSecret = options.accessSecret;
-    
-    // create the streamreader and register the event handler
-    this.streamReader = new StreamReader();
-    this.registerEventHandlers();
+	this.accessToken = options.accessToken;
+	this.accessSecret = options.accessSecret;
+	
+	// create the streamreader and register the event handler
+	this.streamReader = new StreamReader();
+	this.registerEventHandlers();
 
 	this.twitterLogin = new OAuth(
 		'https://twitter.com/oauth/request_token'
-        , 'https://twitter.com/oauth/access_token'
-        , options.consumerKey
-        , options.consumerSecret
-        , '1.0A'
-        , null
-        , 'HMAC-SHA1'
-    );
+		, 'https://twitter.com/oauth/access_token'
+		, options.consumerKey
+		, options.consumerSecret
+		, '1.0A'
+		, null
+		, 'HMAC-SHA1'
+	);
 }
 
 util.inherits(TwitterStream, events.EventEmitter);
