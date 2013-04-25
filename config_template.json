@@ -5,8 +5,8 @@
 		, "access_token" : "YOUR TWITTER ACCESS TOKEN"
 		, "access_secret" : "YOUR TWITTER ACCESS SECRET"
 		, "query" : {
-			"track" : "AN ARRAY OF WORDS TO SEARCH FOR"
-			, "locations" : "AN ARRAY OF LNG/LAT PARAMETERS"
+			"track" : ["OPTIONAL", "WORDS", "TO", "TRACK", "FOR"]
+			, "locations" : ["SOUTHWEST-LAT,SOUTHWEST-LONG,NORTHEAST-LAT,NORTHEAST-LONG", ".."]
 			, "language" : "A TWO LETTER LANGUAGE CODE"
 		}
 	}
