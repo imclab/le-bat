@@ -16,7 +16,7 @@ function TwitterStream(options){
 
 	// build the query url
 	this.url = 'https://stream.twitter.com/1.1/statuses/filter.json?';
-	var params = []
+	var params = [];
 	for(param in options.query){
 		if(param == "filter_level") params.push('filter_level=' + options.query.filter_level);
 		if(param == "track") params.push('track=' + options.query.track.join(','));

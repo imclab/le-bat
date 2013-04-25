@@ -1,7 +1,7 @@
 {
   "name": "tweeting-natural-server"
   , "private": true
-  , "author": "fde31 & mb"
+  , "author": "fde31 & fixed"
   , "contributors": [
       {
         "name": "Florian Demmer"
@@ -20,5 +20,6 @@
   		"forever-monitor" : "1.2.1"
       , "oauth" : "0.9.7"
       , "ws" : "0.4.25"
+      , "mysql" : "2.0.0-alpha7"
   }
 }
