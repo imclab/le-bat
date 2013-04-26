@@ -13,9 +13,12 @@
 	, "websocket" : {
 		"port" : "THE PORT OF THE WEBSOCKET"
 	}
-	, "mysql" : {
-		"host" : "YOUR MYSQL HOST"
-		, "user" : "YOUR MYSQL USERNAME"
-		, "password" : "YOUR MYSQL PASSWORD"
+	, "db" : {
+		"mysql" : {
+			"host" : "YOUR MYSQL HOST"
+			, "user" : "YOUR MYSQL USERNAME"
+			, "password" : "YOUR MYSQL PASSWORD"
+			, "database" : "YOUR TARGET DATABASE NAME"
+		} 
 	}
 }

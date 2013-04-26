@@ -15,3 +15,5 @@ The goal of **Tweeting Natural** is to take real-time input from the Twitter Str
 2. run the npm install command
 3. copy the file `config_template.json` to a new file `config.json` 
 4. fill out the data in the `config.json` file
+5. in your mysql instance (needed), add a database that matches your config.json
+6. run

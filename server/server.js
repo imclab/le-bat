@@ -1,6 +1,7 @@
 var conf = require('../config')
 ,	TwitterStream = require('./lib/TwitterStream')
-,	WebSocketServer = require('./lib/websocketServer');
+,	WebSocketServer = require('./lib/websocketServer')
+,	Database = require('./lib/Database')
 
 var server = new WebSocketServer({port : conf.websocket.port});
 
@@ -30,3 +31,17 @@ tweetStream.on('error',function(err){
 });
 
 tweetStream.connect();
+
+
+var db = new Database(conf.db);
+
+db.on('error', function(err) {
+	console.error(err);
+	process.exit();
+});
+
+db.on('ready', function() {
+	// Fetch words, etc ..
+})
+
+db.init();

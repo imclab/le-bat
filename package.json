@@ -2,6 +2,8 @@
   "name": "tweeting-natural-server"
   , "private": true
   , "author": "fde31 & fixed"
+  , "version" : "0.1.0"
+  , "dbSchemaVersion": "1"
   , "contributors": [
       {
         "name": "Florian Demmer"
@@ -21,5 +23,6 @@
       , "oauth" : "0.9.7"
       , "ws" : "0.4.25"
       , "mysql" : "2.0.0-alpha7"
+      , "underscore" : "1.4.4"
   }
 }
