@@ -2,6 +2,9 @@ var conf = require('../config')
 ,	TwitterStream = require('./lib/TwitterStream')
 ,	WebSocketServer = require('./lib/websocketServer')
 ,	Database = require('./lib/Database')
+,	http = require('http')
+,	express = require('express')
+,	Routes = require('./routes/index');
 
 var websocket = new WebSocketServer({port : conf.websocket.port});
 
@@ -57,3 +60,35 @@ db.on('ready', function() {
 })
 
 db.init();
+
+
+var app = express();
+
+app.configure(function(){
+
+	app.use(express.static(__dirname + '/public'));
+    app.set('views',__dirname + '/views');
+    app.set('view engine', 'jade');
+    
+    app.use(app.router);
+
+    // 404 handler
+    app.use(function(req, res, next){
+        return res.send(404);
+    });
+
+    // 500 handler
+    app.use(function(err, req, res, next) {
+        return res.send(500);
+    });
+});
+
+// init routes
+Routes.init(app);
+try{
+	http.createServer(app).listen(conf.http.port);
+	console.log('HTTP server running on: ' + conf.http.port);
+} catch(err){
+	console.log(err);
+	process.exit();
+}
