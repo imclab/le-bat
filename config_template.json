@@ -21,4 +21,7 @@
 			, "database" : "YOUR TARGET DATABASE NAME"
 		} 
 	}
+	, "http" : {
+		"port" : "THE HTTP PORT TO LISTEN ON"
+	}
 }
