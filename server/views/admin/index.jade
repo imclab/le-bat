@@ -4,3 +4,14 @@ html
 		title Admin Page
 	body
 		h1 Hi Admin
+		form(method="post")
+			fieldset
+				legend wohoo! a form
+				p
+					label(for="entry[word]") Word:
+					input(type="text", name="entry[word")
+				p
+					label(for="entry[sound]") Sound:
+					input(type="text", name="entry[sound]")
+				p
+					input(type="submit", value="save")
