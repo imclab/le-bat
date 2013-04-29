@@ -25,7 +25,6 @@ StreamReader.prototype.read = function receive(buffer) {
 
 		if (data.length > 0) {
 			try{
-				console.log(data);
 				json = JSON.parse(data)
 				this.emit('data', json);
 			} catch(err){
