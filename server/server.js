@@ -1,7 +1,9 @@
-var conf = require('../config')
+var _ = require('underscore')
+,	conf = require('../config')
 ,	TwitterStream = require('./lib/TwitterStream')
 ,	WebSocketServer = require('./lib/websocketServer')
 ,	Database = require('./lib/Database')
+,	Store = require('./lib/sequence/Store')
 ,	http = require('http')
 ,	express = require('express')
 ,	Routes = require('./routes/index');
@@ -42,7 +44,8 @@ tweetStream.on('tweet',function(data){
 });
 
 tweetStream.on('error',function(err){
-	//console.log(err);
+	console.log('tweetStream error');
+	console.log(err);
 });
 
 tweetStream.connect();
@@ -51,8 +54,9 @@ tweetStream.connect();
 var db = new Database(conf.db);
 
 db.on('error', function(err) {
-	console.error(err);
-	process.exit();
+	console.log('Database error');
+	console.log(err);
+	//process.exit();
 });
 
 db.on('ready', function() {
@@ -60,6 +64,16 @@ db.on('ready', function() {
 })
 
 db.init();
+
+
+var sequenceStore = new Store();
+tweetStream.on('tweet', function(data) {
+	sequenceStore.parseText(data.text, new Date(data.created_at).getTime());
+})
+
+setInterval(function() {
+	if(db.ready) db.setAll('sequence', _.values(sequenceStore.sequences));
+}, 10000);
 
 
 var app = express();
@@ -91,6 +105,7 @@ try{
 	http.createServer(app).listen(conf.http.port);
 	console.log('HTTP server running on: ' + conf.http.port);
 } catch(err){
+	console.log("HTTP server error");
 	console.log(err);
-	process.exit();
+	//process.exit();
 }

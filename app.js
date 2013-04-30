@@ -15,6 +15,7 @@ tweetServer.on('start',function(process,data){
 });
 
 tweetServer.on('exit',function(){
+    console.trace();
     console.log('Ooops! The TweetServer exited unexpectedly! Restarting...');
     tweetServer.start();
 });

@@ -1,8 +1,4 @@
--- Generation Time: Apr 26, 2013 at 10:40 PM
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence`
@@ -11,7 +7,8 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE TABLE IF NOT EXISTS `sequence` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(60) NOT NULL,
-  `last_seen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `total_count` bigint(20) unsigned NOT NULL,
+  `blocked` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Character sequences to look out for in tweets.' AUTO_INCREMENT=1 ;
 
@@ -25,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `sequence_sound` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sequence_id` int(10) unsigned NOT NULL,
   `sound_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sequence_id` (`sequence_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Associates character sequences with sounds.' AUTO_INCREMENT=1 ;
@@ -74,6 +72,21 @@ CREATE TABLE IF NOT EXISTS `tag_sound` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user`
+--
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL,
+  `gender` tinyint(3) unsigned NOT NULL COMMENT 'enums are bad',
+  `age` tinyint(3) unsigned NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `var`
 --
 
@@ -82,3 +95,4 @@ CREATE TABLE IF NOT EXISTS `var` (
   `value` text NOT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
