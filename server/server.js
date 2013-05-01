@@ -73,7 +73,7 @@ tweetStream.on('tweet', function(data) {
 
 setInterval(function() {
 	if(db.ready) db.setAll('sequence', _.values(sequenceStore.sequences));
-}, 10000);
+}, 100000);
 
 
 var app = express();

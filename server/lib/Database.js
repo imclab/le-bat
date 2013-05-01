@@ -37,6 +37,7 @@ Database.prototype.setAll = function(tableName, objects) {
 	var query = 'REPLACE INTO ' + mysql.escapeId(tableName) + ' ' + columnNames + ' VALUES ' + values.join(',');
 	this.connection.query(query, function(err, result) {
 		if(err){ self.emit('error', err); return; }
+		console.log('INSERT ID: ' + result.insertId);
 		// insert id for multiple rows returns FIRST inserted id
 		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
 		for(var i=0, n=objects.length; i<n; ++i) 
