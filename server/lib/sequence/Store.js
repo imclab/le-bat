@@ -17,9 +17,9 @@ Store.prototype.parseText = function(text, timestamp) {
 
 Store.prototype.addRawSequences = function(sequences, timestamp) {
 	sequences.forEach(function(element){
-		if(this.sequences.hasOwnProperty(element.content)) {
+		if(this.sequences.hasOwnProperty(element)) {
 			// this.sequences[element].last_seen = timestamp;
-			this.sequences[element.content].total_count++;
+			this.sequences[element].total_count++;
 		} else {
 			this.sequences[element] = new Sequence(null, element, 1, false, timestamp);
 		}
