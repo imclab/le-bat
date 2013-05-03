@@ -5,7 +5,7 @@ var Sequence = require('./Sequence')
 module.exports = Store;
 
 function Store() {
-	this.splitter = new Splitter({ignore: ['usernames', 'punctuation']});
+	this.splitter = new Splitter({ignore: ['usernames', 'urls', 'punctuation', 'single_letters']});
 
 	this.sequences = {};
 

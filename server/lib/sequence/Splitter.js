@@ -11,18 +11,27 @@ module.exports = Splitter;
  */
 function Splitter(options) {
 	this.ignore = _.intersection(options.ignore, _.keys(Splitter.patterns));
-	this.ignorePattern = this.ignore.length == 0 ? /[]/ig : XRegExp(
+	// Not used right now, see #split
+	/* this.ignorePattern = this.ignore.length == 0 ? /[]/ig : XRegExp(
 		_.map(this.ignore, function(element) { return Splitter.patterns[element] }).join('|'), 'ig'
-	);
+	); */
 };
 
 Splitter.patterns = {
-	punctuation: '([\\p{Sm}\\p{Sk}\\p{So}\\p{C}\\p{Mc}\\p{P}])'
-	, usernames: '(\\@\\w+)'
+	usernames: '(\\@\\w+)'
 	, hashtags: '(\\#\\w+)'
+	, urls: '((?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$])'
+	, punctuation: '([\\p{Sm}\\p{Sk}\\p{So}\\p{C}\\p{Mc}\\p{P}])'
+	, single_letters: '((\\s|^)[\\p{L}](?=\\s|$))'
 };
 
 
 Splitter.prototype.split = function(text) {
-	return text.replace(this.ignorePattern, " ").replace(/\s+/ig, " ").trim().split(" ");
+	this.ignore.forEach(function(element) {
+		text = text.replace(XRegExp(Splitter.patterns[element], 'ig'), ' ');
+	})
+	return text.replace(/\s+/ig, " ").trim().split(" ");
+	// Doing all in one pattern via OR groups doesn't match single letters
+	// Needs revision:
+	// return text.replace(this.ignorePattern, " ").replace(/\s+/ig, " ").trim().split(" ");
 };

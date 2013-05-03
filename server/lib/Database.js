@@ -75,7 +75,7 @@ Database.prototype.setAll = function(tableName, objects, callback) {
 	var columns = _.keys(objects[0]);
 	
 	var insertColumnsDef = '(' + _.map(columns, function(name) { return mysql.escapeId(name) }).join(',') + ')';
-	var onDuplicateDef = _.map(_.without(columns, 'id'), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
+	var onDuplicateDef = _.map(_.without(columns, 'id', 'content'), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
 	
 	var values = [];
 	_.values(objects).forEach(function(obj) {
