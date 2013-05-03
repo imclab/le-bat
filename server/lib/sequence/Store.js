@@ -35,7 +35,9 @@ Store.prototype.pullDb = function() {
 	if(this.db && this.db.ready) 
 		this.db.getAll('sequence', null, function(err, result){
 			if(err) return;
-			console.log(result);
+			result.forEach(function(element) {
+				self.sequences[element.content] = Sequence.fromObject(element);
+			});
 			self.lastDbPull = Date.now();
 		});
 }
@@ -56,7 +58,6 @@ Store.prototype.updateDb = function() {
 Store.prototype.parseText = function(text, timestamp) {
 	this.addRawSequences(this.splitter.split(text.toLowerCase()), timestamp);
 	this.lastLocalUpdate = timestamp;
-	// console.log(timestamp);
 }
 
 
@@ -68,6 +69,7 @@ Store.prototype.addRawSequences = function(sequences, timestamp) {
 			this.localUpdates[element] = this.sequences[element];
 		} else {
 			this.sequences[element] = new Sequence(null, element, timestamp, 1, false);
+			this.localUpdates[element] = this.sequences[element];
 		}
 	}, this);
 };

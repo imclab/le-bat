@@ -57,13 +57,14 @@ Database.prototype._convertQueryOptions = function(options) {
 	return where.join(' ');
 }
 
+
 Database.prototype.getAll = function(tableName, options, callback) {
 	var self = this;
 	var query = 'SELECT * FROM ' + mysql.escapeId(tableName);
 	if(options) query += ' ' + this._convertQueryOptions(opions);
 	this.connection.query(query, function(err, result) {
 		if(err){ self.emit('error', err); return; }
-		callback.call(self, result);
+		callback.call(self, err, result);
 	});
 }
 
@@ -71,25 +72,27 @@ Database.prototype.getAll = function(tableName, options, callback) {
 Database.prototype.setAll = function(tableName, objects, callback) {
 	if(objects.length == 0) return;
 	var self = this;
-	var columnDef = '(' + _.map(_.keys(objects[0]), function(name) { return mysql.escapeId(name) }).join(',') + ')';
+	var columns = _.keys(objects[0]);
+	
+	var insertColumnsDef = '(' + _.map(columns, function(name) { return mysql.escapeId(name) }).join(',') + ')';
+	var onDuplicateDef = _.map(_.without(columns, 'id'), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
+	
 	var values = [];
 	_.values(objects).forEach(function(obj) {
 		values.push('(' + _.map(_.values(obj), function(value) { return mysql.escape(value) }).join(',') + ')');
 	});
-	// This is a rather bad call, as result.insertId can be a string.
-	// A better updating scheme is needed.
-	var query = 'REPLACE INTO ' + mysql.escapeId(tableName) + ' ' + columnDef + ' VALUES ' + values.join(',');
-	// console.log(query);
+
+	var query = 'INSERT INTO ' + mysql.escapeId(tableName) + ' ' + insertColumnsDef + ' VALUES ' + values.join(',') +
+		' ON DUPLICATE KEY UPDATE ' + onDuplicateDef;
+	//console.log(query);
 	
 	this.connection.query(query, function(err, result) {
 		callback.call(this, err, result);
 		if(err){ self.emit('error', err); return; }
-		// console.log('INSERT ID: ' + result.insertId);
 		// insert id for multiple rows returns FIRST inserted id
 		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
 		for(var i=0, n=objects.length; i<n; ++i) 
 			if(objects[i].id == null) objects[i].id = result.insertId++;
-		// console.log(objects, result);
 	});
 }
 
