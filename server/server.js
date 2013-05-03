@@ -70,10 +70,7 @@ var sequenceStore = new Store();
 tweetStream.on('tweet', function(data) {
 	sequenceStore.parseText(data.text, new Date(data.created_at).getTime());
 })
-
-setInterval(function() {
-	if(db.ready) db.setAll('sequence', _.values(sequenceStore.sequences));
-}, 100000);
+sequenceStore.setDb(db);
 
 
 var app = express();

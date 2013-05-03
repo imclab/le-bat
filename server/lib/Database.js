@@ -19,30 +19,77 @@ function Database(options) {
 util.inherits(Database, events.EventEmitter);
 
 
-Database.prototype.getAll = function(tableName) {
-
+Database.prototype._validateOperator = function(op) {
+	switch(op.toLowerCase()){
+		case '<':
+		case '<=':
+		case '>':
+		case '>=':
+		case '=':
+		case '!=':
+		case 'and':
+		case 'or': 
+			return op;
+		default: 
+			return false;
+	}
 }
 
 
-Database.prototype.setAll = function(tableName, objects) {
+Database.prototype._convertQueryOptions = function(options) {
+	var where = [],
+		order = null,
+		limit = null;
+	for(var n in options) {
+		switch(n.toLowerCase()) {
+		case 'where':
+			var str = '';
+			options.where.forEach(function(element) {
+				if(typeof element == 'string')
+					str += this._validateOperator(element);
+				str += mysql.escapeId(element.c);
+				str += element.op ? this._validateOperator(element.op) : '=';
+				str += mysql.escape(element.v);
+				where.push(str);
+			}, this);
+		}
+	}
+	return where.join(' ');
+}
+
+Database.prototype.getAll = function(tableName, options, callback) {
+	var self = this;
+	var query = 'SELECT * FROM ' + mysql.escapeId(tableName);
+	if(options) query += ' ' + this._convertQueryOptions(opions);
+	this.connection.query(query, function(err, result) {
+		if(err){ self.emit('error', err); return; }
+		callback.call(self, result);
+	});
+}
+
+
+Database.prototype.setAll = function(tableName, objects, callback) {
 	if(objects.length == 0) return;
 	var self = this;
-	var columnNames = '(' + _.map(_.keys(objects[0]), function(name) { return mysql.escapeId(name) }).join(',') + ')';
+	var columnDef = '(' + _.map(_.keys(objects[0]), function(name) { return mysql.escapeId(name) }).join(',') + ')';
 	var values = [];
 	_.values(objects).forEach(function(obj) {
 		values.push('(' + _.map(_.values(obj), function(value) { return mysql.escape(value) }).join(',') + ')');
 	});
 	// This is a rather bad call, as result.insertId can be a string.
 	// A better updating scheme is needed.
-	var query = 'REPLACE INTO ' + mysql.escapeId(tableName) + ' ' + columnNames + ' VALUES ' + values.join(',');
+	var query = 'REPLACE INTO ' + mysql.escapeId(tableName) + ' ' + columnDef + ' VALUES ' + values.join(',');
+	// console.log(query);
+	
 	this.connection.query(query, function(err, result) {
+		callback.call(this, err, result);
 		if(err){ self.emit('error', err); return; }
-		//console.log('INSERT ID: ' + result.insertId);
+		// console.log('INSERT ID: ' + result.insertId);
 		// insert id for multiple rows returns FIRST inserted id
 		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
 		for(var i=0, n=objects.length; i<n; ++i) 
 			if(objects[i].id == null) objects[i].id = result.insertId++;
-		//console.log(objects, result);
+		// console.log(objects, result);
 	});
 }
 
@@ -69,9 +116,10 @@ Database.prototype.init = function() {
 							+ 'Running version:' + result[0].value + os.EOL
 							+ 'Needed version: ' + pjson.dbSchemaVersion);
 						self.connection.end();
+					} else {
+						console.log("Database up and running fine.");
+						self._onReady();
 					}
-					console.log("Database up and running fine.");
-					self._onReady();
 				}
 			})
 		}
@@ -116,7 +164,7 @@ Database.prototype.shutdown = function() {
 Database.prototype._registerEvents = function(){
 	var self = this;
 	this.connection.on('error', function(err) {
-		console.error('Database connection error');
+		console.error('Database connection error', err);
 		self.emit('error', err);
 	})
 	self.on('ready', function() {

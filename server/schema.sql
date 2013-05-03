@@ -7,10 +7,12 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE TABLE IF NOT EXISTS `sequence` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(60) NOT NULL,
+  `last_update` bigint(20) unsigned NOT NULL,
   `total_count` bigint(20) unsigned NOT NULL,
   `blocked` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Character sequences to look out for in tweets.' AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `content` (`content`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Character sequences to look out for in tweets.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
