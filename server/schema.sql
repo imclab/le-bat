@@ -1,4 +1,8 @@
+-- Generation Time: May 05, 2013 at 12:10 AM
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence`
@@ -26,7 +30,8 @@ CREATE TABLE IF NOT EXISTS `sequence_sound` (
   `sound_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `sequence_id` (`sequence_id`)
+  KEY `sequence_id` (`sequence_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Associates character sequences with sounds.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -68,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `tag_sound` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag_id` int(10) unsigned NOT NULL,
   `sound_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Associates tags with sounds' AUTO_INCREMENT=1 ;
 
