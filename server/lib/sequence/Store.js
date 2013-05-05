@@ -33,7 +33,7 @@ Store.prototype.setDb = function(db) {
 Store.prototype.pullDb = function() {
 	var self = this;
 	if(this.db && this.db.ready) 
-		this.db.getAll('sequence', null, function(err, result){
+		this.db.getAll(Sequence.ModelInfo, null, function(err, result){
 			if(err) return;
 			result.forEach(function(element) {
 				self.sequences[element.content] = Sequence.fromObject(element);
@@ -48,7 +48,7 @@ Store.prototype.updateDb = function() {
 	var shouldUpdate = false;
 	for(var n in this.localUpdates) { shouldUpdate = true; break; }
 	if(this.db && this.db.ready && shouldUpdate) 
-		this.db.setAll('sequence', _.values(this.localUpdates), function(err, result) {
+		this.db.setAll(Sequence.ModelInfo, _.values(this.localUpdates), function(err, result) {
 			if(err) return;
 			self.localUpdates = {};
 			self.lastDbSave = Date.now();
@@ -56,6 +56,7 @@ Store.prototype.updateDb = function() {
 }
 
 Store.prototype.parseText = function(text, timestamp) {
+	if(typeof text != 'string') return;
 	this.addRawSequences(this.splitter.split(text.toLowerCase()), timestamp);
 	this.lastLocalUpdate = timestamp;
 }

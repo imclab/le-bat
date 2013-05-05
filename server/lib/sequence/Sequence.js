@@ -1,3 +1,5 @@
+var Database = require('../Database');
+
 module.exports = Sequence;
 
 function Sequence(id, content, last_update, total_count, blocked) {
@@ -11,3 +13,10 @@ function Sequence(id, content, last_update, total_count, blocked) {
 Sequence.fromObject = function(obj) {
 	return new Sequence(obj.id, obj.content, obj.last_update, obj.total_count, obj.blocked);
 }
+
+Sequence.ModelInfo = new Database.ModelInfo({
+	tableName: 'sequence',
+	primary: 'id',
+	autoIncrement: 'id',
+	unique: 'content'
+});

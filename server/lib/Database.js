@@ -19,84 +19,6 @@ function Database(options) {
 util.inherits(Database, events.EventEmitter);
 
 
-Database.prototype._validateOperator = function(op) {
-	switch(op.toLowerCase()){
-		case '<':
-		case '<=':
-		case '>':
-		case '>=':
-		case '=':
-		case '!=':
-		case 'and':
-		case 'or': 
-			return op;
-		default: 
-			return false;
-	}
-}
-
-
-Database.prototype._convertQueryOptions = function(options) {
-	var where = [],
-		order = null,
-		limit = null;
-	for(var n in options) {
-		switch(n.toLowerCase()) {
-		case 'where':
-			var str = '';
-			options.where.forEach(function(element) {
-				if(typeof element == 'string')
-					str += this._validateOperator(element);
-				str += mysql.escapeId(element.c);
-				str += element.op ? this._validateOperator(element.op) : '=';
-				str += mysql.escape(element.v);
-				where.push(str);
-			}, this);
-		}
-	}
-	return where.join(' ');
-}
-
-
-Database.prototype.getAll = function(tableName, options, callback) {
-	var self = this;
-	var query = 'SELECT * FROM ' + mysql.escapeId(tableName);
-	if(options) query += ' ' + this._convertQueryOptions(opions);
-	this.connection.query(query, function(err, result) {
-		if(err){ self.emit('error', err); return; }
-		callback.call(self, err, result);
-	});
-}
-
-
-Database.prototype.setAll = function(tableName, objects, callback) {
-	if(objects.length == 0) return;
-	var self = this;
-	var columns = _.keys(objects[0]);
-	
-	var insertColumnsDef = '(' + _.map(columns, function(name) { return mysql.escapeId(name) }).join(',') + ')';
-	var onDuplicateDef = _.map(_.without(columns, 'id', 'content'), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
-	
-	var values = [];
-	_.values(objects).forEach(function(obj) {
-		values.push('(' + _.map(_.values(obj), function(value) { return mysql.escape(value) }).join(',') + ')');
-	});
-
-	var query = 'INSERT INTO ' + mysql.escapeId(tableName) + ' ' + insertColumnsDef + ' VALUES ' + values.join(',') +
-		' ON DUPLICATE KEY UPDATE ' + onDuplicateDef;
-	//console.log(query);
-	
-	this.connection.query(query, function(err, result) {
-		callback.call(this, err, result);
-		if(err){ self.emit('error', err); return; }
-		// insert id for multiple rows returns FIRST inserted id
-		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
-		for(var i=0, n=objects.length; i<n; ++i) 
-			if(objects[i].id == null) objects[i].id = result.insertId++;
-	});
-}
-
-
 Database.prototype.init = function() {
 	var self = this;
 	this.connection.connect();
@@ -127,6 +49,114 @@ Database.prototype.init = function() {
 			})
 		}
 	});
+}
+
+
+Database.prototype.getAll = function(modelInfo, options, callback) {
+	if(!(modelInfo instanceof Database.ModelInfo)) {
+		this.emit('error', 'Please provide a valid Database.ModelInfo');
+		return;
+	}
+	var self = this;
+	var query = 'SELECT * FROM ' + mysql.escapeId(modelInfo.tableName);
+	if(options) query += ' ' + this._convertQueryOptions(opions);
+	this.connection.query(query, function(err, result) {
+		if(err){ self.emit('error', err); return; }
+		callback.call(self, err, result);
+	});
+}
+
+
+Database.prototype.setAll = function(modelInfo, objects, callback) {
+	if(!(modelInfo instanceof Database.ModelInfo)) {
+		this.emit('error', 'Please provide a valid Database.ModelInfo');
+		return;
+	}
+	if(objects.length == 0) return;
+	var self = this;
+	var columns = _.keys(objects[0]);
+	
+	var insertColumnsDef = '(' + _.map(columns, function(name) { return mysql.escapeId(name) }).join(',') + ')';
+	var onDuplicateDef = _.map(_.without(columns, modelInfo.unique), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
+	
+	var values = [];
+	_.values(objects).forEach(function(obj) {
+		values.push('(' + _.map(_.values(obj), function(value) { return mysql.escape(value) }).join(',') + ')');
+	});
+
+	var query = 'INSERT INTO ' + mysql.escapeId(modelInfo.tableName) + ' ' + insertColumnsDef + ' VALUES ' + values.join(',') +
+		' ON DUPLICATE KEY UPDATE ' + onDuplicateDef;
+	//console.log(query);
+	
+	this.connection.query(query, function(err, result) {
+		callback.call(this, err, result);
+		if(err){ self.emit('error', err); return; }
+		var useStrint = typeof result.insertId == 'string';
+		// insert id for multiple rows returns FIRST inserted id
+		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
+		for(var i=0, n=objects.length; i<n; ++i) 
+			if(objects[i][modelInfo.autoIncrement] == null) objects[i][modelInfo.autoIncrement] = result.insertId++;
+	});
+}
+
+
+Database.prototype._validateOperator = function(op) {
+	switch(op.toLowerCase()){
+		case '<':
+		case '<=':
+		case '>':
+		case '>=':
+		case '=':
+		case '<>':
+		case 'and':
+		case 'or': 
+			return op;
+		default: 
+			return false;
+	}
+}
+
+
+Database.prototype._convertQueryOptions = function(options) {
+	var where = [],
+		order = [],
+		limit = [],
+		result = [];
+	for(var n in options) {
+		switch(n.toLowerCase()) {
+		case 'where':
+			var str = '';
+			options.where.forEach(function(element) {
+				if(typeof element == 'string')
+					str += this._validateOperator(element);
+				else {
+					str += mysql.escapeId(element.col);
+					str += element.op ? this._validateOperator(element.op) : '=';
+					str += mysql.escape(element.val);
+				}
+				where.push(str);
+			}, this);
+			break;
+		case 'order': 
+			var str = '';
+			options.order.forEach(function(element) {
+				var isExpression = element.hasOwnProperty('exp');
+				if(isExpression) str += element.exp + '(';
+				str += element.hasOwnElement('col') ? mysql.escapeId(element.col) : '';
+				if(isExpression) str += ')';
+				str += element.desc ? ' DESC' : ' ASC';
+			}, this);
+			break;
+		case 'limit': 
+			if(options.limit.hasOwnProperty('offset')) limit.push(options.limit.offset);
+			if(options.limit.hasOwnProperty('count')) limit.push(options.limit.count);
+			break;
+		}
+	}
+	if(where.length) result.push(where.join(' '));
+	if(where.order) result.push(order.join(', '));
+	if(where.limit) result.push(limit.join(', '));
+	return result.join(' ');
 }
 
 
@@ -176,3 +206,16 @@ Database.prototype._registerEvents = function(){
 		})
 	})
 } 
+
+
+
+/******************************************************************************
+ * Class template for usage in database queries, describing table constraints
+ *****************************************************************************/
+
+Database.ModelInfo = function(options) {
+	this.tableName = options.tableName;
+	this.autoIncrement = options.autoIncrement;
+	this.primary = options.primary;
+	this.unique = [].concat(options.unique);
+}
