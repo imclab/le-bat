@@ -12,8 +12,8 @@ module.exports.init = function(app){
 		, AdminRoutes.index
 	);
 
-	app.post('/admin'
-		, AdminRoutes.update
+	app.post('/sound'
+		, AdminRoutes.uploadSound
 	);
 
 }

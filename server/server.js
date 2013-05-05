@@ -81,7 +81,8 @@ app.configure(function(){
     app.set('views',__dirname + '/views');
     app.set('view engine', 'jade');
 
-    app.use(express.bodyParser());
+	app.use(express.json());
+	app.use(express.urlencoded());
     
     app.use(app.router);
 
@@ -92,6 +93,7 @@ app.configure(function(){
 
     // 500 handler
     app.use(function(err, req, res, next) {
+    	console.log(err);
         return res.send(500);
     });
 });
