@@ -77,7 +77,10 @@ Database.prototype.setAll = function(modelInfo, objects, callback) {
 	var columns = _.keys(objects[0]);
 	
 	var insertColumnsDef = '(' + _.map(columns, function(name) { return mysql.escapeId(name) }).join(',') + ')';
-	var onDuplicateDef = _.map(_.without(columns, modelInfo.unique), function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
+
+	var onDuplicateSafeColumns = []; 
+	columns.forEach(function(col){ if(col != modelInfo.autoIncrement && !_.contains(modelInfo.unique, col)) onDuplicateSafeColumns.push(col); });
+	var onDuplicateDef = _.map(onDuplicateSafeColumns, function(name) { return mysql.escapeId(name)+'=VALUES('+mysql.escapeId(name)+')'}).join(',');
 	
 	var values = [];
 	_.values(objects).forEach(function(obj) {
