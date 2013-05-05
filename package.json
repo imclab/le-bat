@@ -27,6 +27,8 @@
 		, "express" : "3.2.2"
 		, "jade" : "0.29.0"
 		, "xregexp" : "2.0.0"
+		, "formidable" : "1.0.14"
+		, "async" : "0.2.8"
 	}
 	, "devDependencies": {
 		"vows": "0.7.x"
