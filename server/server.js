@@ -56,7 +56,7 @@ var db = new Database(conf.db);
 db.on('error', function(err) {
 	console.log('Database error');
 	console.log(err);
-	//process.exit();
+	process.exit();
 });
 
 db.on('ready', function() {
