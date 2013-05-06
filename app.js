@@ -14,10 +14,4 @@ tweetServer.on('start',function(process,data){
     console.log('TweetServer running on ' + data.pid);
 });
 
-tweetServer.on('exit',function(){
-    console.trace();
-    console.log('Ooops! The TweetServer exited unexpectedly! Restarting...');
-    tweetServer.start();
-});
-
 tweetServer.start();
