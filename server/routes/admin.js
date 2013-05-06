@@ -92,13 +92,11 @@ function saveTags(fields,sound,done){
 }
 
 function saveTag(name,soundId,done){
-	// DISCUSS: why does the constructor expect an id!?
-	var tag = new Tag(0,name);
+	var tag = new Tag(null,name);
 
 	// TODO: perform DB save query for tag
-	// DISCUSS: do we have/do we wanna have an userID for sound/tag mapping right now!?
 
-	var tagSoundMapping = new TagSoundMapping(0,tag.id,soundId,0);
+	var tagSoundMapping = new TagSoundMapping(null,tag.id,soundId,0);
 
 	// TODO: perform DB save query for TagSoundMapping
 	var err = null;
