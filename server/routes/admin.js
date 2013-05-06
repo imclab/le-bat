@@ -22,9 +22,11 @@ module.exports.uploadSound = function(req,res,next){
 			return res.send('An error occured while transmitting the file.');
 		}
 
+		var file = files.sound;
+
 		async.waterfall([
 			function(done){
-				return done(null,fields,files.sound)
+				return done(null,fields,file)
 			}
 			, validate
 			, renameFile
@@ -32,12 +34,15 @@ module.exports.uploadSound = function(req,res,next){
 			, saveTags
 		],function(err){
 			if(err){
-				// TODO: remove file and rewind changes on DB
-				console.log(err);
+				// TODO: rewind changes on DB
 				console.log(err.error);
-				return res.send(err.httpCode,err.message);
+				fs.unlink(file.path,function(unlinkErr){
+					if(unlinkErr) console.log(unlinkErr);
+					return res.send(err.httpCode,err.message);
+				});
+			} else{
+				return res.send(200,'File uploaded successfully');
 			}
-			return res.send(200,'File uploaded successfully');
 		});
 	});
 };
@@ -60,6 +65,7 @@ function renameFile(fields,file,done){
 		if(err){
 			return done({error : err, httpCode : 500, message : 'Could not save file due to an intenal error.'});
 		}
+		file.path = newPath;
 		return done(null,fields,file,newPath);
 	});
 }
