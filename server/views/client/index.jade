@@ -3,6 +3,10 @@ html
 	head
 		title Client Page
 		link(rel='stylesheet', href='css/bootstrap.min.css')
+		| <script type='text/javascript'>
+		- var settingsJson = JSON.stringify(clientSettings)
+		| settings = !{settingsJson}
+		| </script>
 	body
 		h1 Hi
 		h2 for now please watch your console!

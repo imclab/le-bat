@@ -73,7 +73,7 @@ function WebSocketConnection(url){
 Util.inherits(WebSocketConnection,EventEmitter);
 
 $(function(){
-	var wsUrl = 'ws://localhost:9090';
+	var wsUrl = 'ws://' + settings.host + ':' + settings.websocket.port;
 	var websocket = new WebSocketConnection(wsUrl);
 
 	websocket.on('data',function(data){

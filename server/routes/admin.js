@@ -29,7 +29,7 @@ module.exports.uploadSound = function(req,res,next){
 		}
 
 		var file = files.sound;
-		console.log(file);
+
 		async.waterfall([
 			function(done){
 				return done(null,req,fields,file)
@@ -94,7 +94,7 @@ function saveSound(req,fields,file,filePath,done){
 	req.db.setAll(Sound.ModelInfo, [sound], function(err, result) {
 		if(err) 
 			return done({error : err, httpCode : 500, message : 'Could not save information to databse due to an intenal error.'});
-		console.log(result);
+
 		return done(null,req,fields,sound);
 	})
 }
