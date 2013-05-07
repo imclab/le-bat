@@ -122,9 +122,9 @@ Database.prototype._validateOperator = function(op) {
 
 
 Database.prototype._convertQueryOptions = function(options) {
-	var where = [],
-		order = [],
-		limit = [],
+	var where = ['WHERE'],
+		order = ['ORDER'],
+		limit = ['LIMIT'],
 		result = [];
 	for(var n in options) {
 		switch(n.toLowerCase()) {
