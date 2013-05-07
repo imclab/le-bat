@@ -1,39 +1,57 @@
 define([
 	'./locator',
-	'./websocketConnection'
-],function(Locator,WebsocketConnection){
+	'./websocketConnection',
+	'./bufferLoader'
+],function(Locator,WebsocketConnection,BufferLoader){
 
 	var wsUrl = 'ws://' + settings.host + ':' + settings.websocket.port;
-	var locator, websocket;
+	var locator, websocket, audioContext;
 
 	function init(){
+		if(navigator.geolocation){
 
-		locator = new Locator();
-		locator.on('error',function(){
+			// first of all create audio context and access sound files
+			audioContext = new webkitAudioContext();
+			var bufferLoader = new BufferLoader(mappings,audioContext);
 
-		});
+			bufferLoader.on('ready',function(buffers){
 
-		locator.on('ready',function(){
-			//websocket.connect();
-			//console.log(locator.calcDistanceAndBearing(38.897147,-77.043934));
-		});
+				locator = new Locator();
+				locator.on('error',function(){
 
-		websocket = new WebsocketConnection(wsUrl);
+				});
 
-		websocket.on('data',function(data){
-			console.log(data);
-		});
+				locator.on('ready',function(){
+					websocket.connect();
+				});
 
-		websocket.on('close',function(){
-			console.log('websocket closed');
-		});
+				websocket = new WebsocketConnection(wsUrl);
 
-		locator.init();
+				websocket.on('data',function(data){
+					console.log(data.sound_key);
+				});
+
+				websocket.on('close',function(){
+					console.log('websocket closed');
+				});
+
+				locator.init();
+			});
+
+			bufferLoader.on('error',function(err){
+				console.log(err);
+			});
+
+			bufferLoader.load();
+
+		} else {
+			// maybe give a more beautiful info here later
+			alert('sorry but your browser does not support the geolocation API');
+		}
 	}
 
   	return {
   		init : init,
-  		locator : locator,
-  		websocket : websocket
+  		audioContext : audioContext
   	};
 });
