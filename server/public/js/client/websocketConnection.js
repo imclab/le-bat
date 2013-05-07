@@ -1,6 +1,7 @@
 define([
-	'eventEmitter'
-],function(EventEmitter){
+	'eventEmitter',
+	'utils'
+],function(EventEmitter,Util){
 
 	//Wrapper for websocket in order encapsulate parsing, reconnections etc.
 	function WebsocketConnection(url){
@@ -39,7 +40,7 @@ define([
 	}
 
 	// inherit from EventEmitter
-	WebsocketConnection.prototype = Object.create(EventEmitter.prototype);
+	Util.inherits(WebsocketConnection,EventEmitter);
 
 	return WebsocketConnection;
 });

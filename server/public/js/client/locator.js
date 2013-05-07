@@ -1,6 +1,7 @@
 define([
-	'eventEmitter'
-],function(EventEmitter){
+	'eventEmitter',
+	'utils'
+],function(EventEmitter,Util){
 
 	var toRad = Math.PI / 180;
 	var toDeg = 180 / Math.PI;
@@ -82,7 +83,7 @@ define([
 	}
 
 	// inherit from EventEmitter
-	Locator.prototype = Object.create(EventEmitter.prototype);
+	Util.inherits(Locator,EventEmitter);
 
 	return Locator;
 
