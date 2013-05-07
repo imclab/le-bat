@@ -87,9 +87,10 @@ Database.prototype.setAll = function(modelInfo, objects, callback) {
 		values.push('(' + _.map(_.values(obj), function(value) { return mysql.escape(value) }).join(',') + ')');
 	});
 
-	var query = 'INSERT INTO ' + mysql.escapeId(modelInfo.tableName) + ' ' + insertColumnsDef + ' VALUES ' + values.join(',') +
-		' ON DUPLICATE KEY UPDATE ' + onDuplicateDef;
-	//console.log(query);
+	var query = 'INSERT INTO ' + mysql.escapeId(modelInfo.tableName) + ' ' + insertColumnsDef + ' VALUES ' + values.join(',');
+	if(onDuplicateDef)
+		query += ' ON DUPLICATE KEY UPDATE ' + onDuplicateDef;
+	// console.log(query);
 	
 	this.connection.query(query, function(err, result) {
 		callback.call(this, err, result);
