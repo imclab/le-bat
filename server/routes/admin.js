@@ -1,6 +1,7 @@
 var fs = require('fs')
 ,	formidable = require('formidable')
 ,	async = require('async')
+,	_ = require('underscore')
 ,	Sound = require('../lib/sound/Sound')
 ,	Tag = require('../lib/mapping/Tag')
 ,	TagSoundMapping = require('../lib/mapping/TagSoundMapping');
@@ -37,7 +38,9 @@ module.exports.uploadSound = function(req,res,next){
 			, validate
 			, renameFile
 			, saveSound
-			, saveTags
+			, lookupTags
+			, saveNewTags
+			, saveTagSoundMappings
 		],function(err){
 			if(err){
 				// TODO: rewind changes on DB
@@ -70,7 +73,7 @@ function renameFile(req,fields,file,done){
 
 	fs.rename(oldPath,newPath,function(err){
 		if(err){
-			return done({error : err, httpCode : 500, message : 'Could not save file due to an intenal error.'});
+			return done({error : err, httpCode : 500, message : 'Could not save file due to an internal error.'});
 		}
 		file.path = newPath;
 		return done(null,req,fields,file,newPath);
@@ -80,6 +83,7 @@ function renameFile(req,fields,file,done){
 function saveSound(req,fields,file,filePath,done){
 	if(true) // TODO: check if it was uploaded (and not on a different server for instance)
 		filePath = filePath.replace('./server/public', ''); // store the path ready to download
+
 	var sound = Sound.fromObject({
 		sha1 : file.hash
 		, file_path : filePath
@@ -87,41 +91,74 @@ function saveSound(req,fields,file,filePath,done){
 		, license : fields.license
 		, author : fields.author
 	});
-	// TODO: perform DB save query
+
 	if(!req.db || !req.db.ready) 
-		return done({error: 'Database not available', httpCode: 500, message: 'Database not available'})
+		return done({error: 'Database not available', httpCode: 500, message: 'Database not available'});
 
 	req.db.setAll(Sound.ModelInfo, [sound], function(err, result) {
 		if(err) 
-			return done({error : err, httpCode : 500, message : 'Could not save information to databse due to an intenal error.'});
-
+			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
+		
+		sound.id = result.insertId;
 		return done(null,req,fields,sound);
-	})
+	});
 }
 
-function saveTags(req,fields,sound,done){
-	var tags = fields.tags.split(',');
+function lookupTags(req,fields,sound,done){
+	var tagNames = _.uniq(fields.tags.split(','));
+	var queryOptions = { where : [] };
+	var tags = {};
+	var tagSoundMappings = [];
+	var name;
 
-	var asyncCounter = 0;
-	for(var i = 0, length = tags.length; i < length; i++){
+	// build the query options and create an object
+	// for checking which tags are new later
+	for(var i = 0, length = tagNames.length; i < length; i++){
+		if(i != 0)
+			queryOptions.where.push('or');
 
-		saveTag(req,tags[i],sound.id,function(err){
-			asyncCounter++;
-			if(asyncCounter == tags.length){
-				return done(null);
-			}
-		});
+		name = tagNames[i];
+		tags[name] = undefined;
+		queryOptions.where.push({ col : 'name', val : name });
 	}
+
+	// send query
+	req.db.getAll(Tag.ModelInfo,queryOptions,function(err,result){
+		if(err) 
+			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
+		
+
+		for(var i = 0, length = result.length; i < length; i++){
+			tagSoundMappings.push(new TagSoundMapping(null,result[i].id,sound.id,0)); // create a new mapping
+			delete tags[result[i].name]; // no new tag -> delete it
+		}
+		return done(null,req,sound,tags,tagSoundMappings);
+	});
 }
 
-function saveTag(req,name,soundId,done){
-	var tag = new Tag(null,name);
+function saveNewTags(req,sound,tags,tagSoundMappings,done){
+	var newTags = [];
+	for(var name in tags){
+		newTags.push(new Tag(null,name));
+	}
+	req.db.setAll(Tag.ModelInfo,newTags,function(err,result){
+		if(err)
+			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
 
-	// TODO: perform DB save query for tag
+		// access ids and create mappings
+		for(var i = result.insertId; i < result.insertId + result.affectedRows; i++){
+			tagSoundMappings.push(new TagSoundMapping(null,i,sound.id,0));
+		}
+		return done(null,req,tagSoundMappings);
+	});
+}
 
-	var tagSoundMapping = new TagSoundMapping(null,tag.id,soundId,0);
+function saveTagSoundMappings(req,mappings,done){
+	req.db.setAll(TagSoundMapping.ModelInfo,mappings,function(err,result){
+		if(err)
+			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
 
-	// TODO: perform DB save query for TagSoundMapping
-	var err = null;
-	return done(null);
+		console.log(result);
+		return done(null);
+	});
 }
