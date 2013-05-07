@@ -129,8 +129,8 @@ Database.prototype._convertQueryOptions = function(options) {
 	for(var n in options) {
 		switch(n.toLowerCase()) {
 		case 'where':
-			var str = '';
 			options.where.forEach(function(element) {
+				var str = '';
 				if(typeof element == 'string')
 					str += this._validateOperator(element);
 				else {
