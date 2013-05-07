@@ -6,7 +6,13 @@ var fs = require('fs')
 ,	TagSoundMapping = require('../lib/mapping/TagSoundMapping');
 
 module.exports.index = function(req,res,next){
-	return res.render('admin/index');
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	req.db.getAll(Sound.ModelInfo, null, function(err, result) {
+		if(err) return res.send(500, err);
+		res.render('admin/index', {sounds: result});
+	})
 };
 
 module.exports.uploadSound = function(req,res,next){
@@ -23,10 +29,10 @@ module.exports.uploadSound = function(req,res,next){
 		}
 
 		var file = files.sound;
-
+		console.log(file);
 		async.waterfall([
 			function(done){
-				return done(null,fields,file)
+				return done(null,req,fields,file)
 			}
 			, validate
 			, renameFile
@@ -35,6 +41,7 @@ module.exports.uploadSound = function(req,res,next){
 		],function(err){
 			if(err){
 				// TODO: rewind changes on DB
+				// You can only rewind if you know where it got stuck..
 				console.log(err.error);
 				fs.unlink(file.path,function(unlinkErr){
 					if(unlinkErr) console.log(unlinkErr);
@@ -48,15 +55,15 @@ module.exports.uploadSound = function(req,res,next){
 };
 
 
-function validate(fields,file,done){
+function validate(req,fields,file,done){
 	if(file.type != 'audio/mp3') return done({error : 'wrong filetype', httpCode : 415 , message : 'Given file was not a mp3!'});
 	if(!fields.tags) return done({error : 'missing tags', httpCode : 400, message : 'File without tags! Did not save file on server'});
 
-	return done(null,fields,file);
+	return done(null,req,fields,file);
 }
 
 
-function renameFile(fields,file,done){
+function renameFile(req,fields,file,done){
 	var oldPath = './' + file.path;
 	var extension = oldPath.substr(oldPath.lastIndexOf('.'));
 	var newPath = './server/public/sounds/' + file.hash + extension;
@@ -66,11 +73,13 @@ function renameFile(fields,file,done){
 			return done({error : err, httpCode : 500, message : 'Could not save file due to an intenal error.'});
 		}
 		file.path = newPath;
-		return done(null,fields,file,newPath);
+		return done(null,req,fields,file,newPath);
 	});
 }
 
-function saveSound(fields,file,filePath,done){
+function saveSound(req,fields,file,filePath,done){
+	if(true) // TODO: check if it was uploaded (and not on a different server for instance)
+		filePath = filePath.replace('./server/public', ''); // store the path ready to download
 	var sound = Sound.fromObject({
 		sha1 : file.hash
 		, file_path : filePath
@@ -79,16 +88,24 @@ function saveSound(fields,file,filePath,done){
 		, author : fields.author
 	});
 	// TODO: perform DB save query
-	return done(null,fields,sound);
+	if(!req.db || !req.db.ready) 
+		return done({error: 'Database not available', httpCode: 500, message: 'Database not available'})
+
+	req.db.setAll(Sound.ModelInfo, [sound], function(err, result) {
+		if(err) 
+			return done({error : err, httpCode : 500, message : 'Could not save information to databse due to an intenal error.'});
+		console.log(result);
+		return done(null,req,fields,sound);
+	})
 }
 
-function saveTags(fields,sound,done){
+function saveTags(req,fields,sound,done){
 	var tags = fields.tags.split(',');
 
 	var asyncCounter = 0;
 	for(var i = 0, length = tags.length; i < length; i++){
 
-		saveTag(tags[i],sound.id,function(err){
+		saveTag(req,tags[i],sound.id,function(err){
 			asyncCounter++;
 			if(asyncCounter == tags.length){
 				return done(null);
@@ -97,7 +114,7 @@ function saveTags(fields,sound,done){
 	}
 }
 
-function saveTag(name,soundId,done){
+function saveTag(req,name,soundId,done){
 	var tag = new Tag(null,name);
 
 	// TODO: perform DB save query for tag

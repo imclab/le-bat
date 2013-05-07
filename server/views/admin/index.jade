@@ -8,7 +8,31 @@ html
 		div.container-fluid
 			div.row-fluid
 				div.span8
-					h1 placeholder for mappings
+					section#mappings
+						div.page-header
+							h1 Placeholder for mappings
+						p [Put stuff here]
+						br
+						br
+					section#sounds
+						div.page-header
+							h1 Uploaded sounds
+						table.table
+							thead
+								tr
+									th Info
+									th Audio
+							tbody
+								for sound in sounds
+									tr
+										td: p
+											| SHA1: #{sound.sha1}
+											br
+											| By #{sound.author} (#{sound.license} license) from 
+											a(href='#{sound.source}') #{sound.source}
+
+										td: audio(src='#{sound.file_path}', controls)
+
 				div.span4
 					div.row-fluid
 						div.span12

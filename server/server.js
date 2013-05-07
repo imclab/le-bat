@@ -82,6 +82,11 @@ app.configure(function(){
 
 	app.use(express.json());
 	app.use(express.urlencoded());
+
+	app.use(function(req, res, next) {
+		req.db = db;
+		next();
+	})
     
     app.use(app.router);
 
