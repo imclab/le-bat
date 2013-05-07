@@ -30,6 +30,8 @@ define([
 						self.bufferList[soundKey] = buffer;
 						if(++self.loadCount == self.amountOfUrls){
 							self.emit('ready',self.bufferList);
+						} else{
+							console.log('decoded ' + self.loadCount + ' out of ' + self.amountOfUrls + ' buffers');
 						}
 					}
 					,function(err){
