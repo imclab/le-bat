@@ -157,8 +157,7 @@ function saveTagSoundMappings(req,mappings,done){
 	req.db.setAll(TagSoundMapping.ModelInfo,mappings,function(err,result){
 		if(err)
 			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
-
-		console.log(result);
+		
 		return done(null);
 	});
 }
