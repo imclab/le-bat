@@ -122,9 +122,9 @@ Database.prototype._validateOperator = function(op) {
 
 
 Database.prototype._convertQueryOptions = function(options) {
-	var where = ['WHERE'],
-		order = ['ORDER'],
-		limit = ['LIMIT'],
+	var where = [],
+		order = [],
+		limit = [],
 		result = [];
 	for(var n in options) {
 		switch(n.toLowerCase()) {
@@ -142,13 +142,14 @@ Database.prototype._convertQueryOptions = function(options) {
 			}, this);
 			break;
 		case 'order': 
-			var str = '';
 			options.order.forEach(function(element) {
+				var str = '';
 				var isExpression = element.hasOwnProperty('exp');
 				if(isExpression) str += element.exp + '(';
 				str += element.hasOwnElement('col') ? mysql.escapeId(element.col) : '';
 				if(isExpression) str += ')';
 				str += element.desc ? ' DESC' : ' ASC';
+				order.push(str);
 			}, this);
 			break;
 		case 'limit': 
@@ -157,9 +158,9 @@ Database.prototype._convertQueryOptions = function(options) {
 			break;
 		}
 	}
-	if(where.length) result.push(where.join(' '));
-	if(where.order) result.push(order.join(', '));
-	if(where.limit) result.push(limit.join(', '));
+	if(where.length) result.push('WHERE ' + where.join(' '));
+	if(order.length) result.push('ORDER BY ' + order.join(', '));
+	if(limit.length) result.push('LIMIT ' + limit.join(', '));
 	return result.join(' ');
 }
 
