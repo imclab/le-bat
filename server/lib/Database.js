@@ -59,7 +59,7 @@ Database.prototype.getAll = function(modelInfo, options, callback) {
 	}
 	var self = this;
 	var query = 'SELECT * FROM ' + mysql.escapeId(modelInfo.tableName);
-	if(options) query += ' ' + this._convertQueryOptions(opions);
+	if(options) query += ' ' + this._convertQueryOptions(options);
 	this.connection.query(query, function(err, result) {
 		if(err){ self.emit('error', err); return; }
 		callback.call(self, err, result);
