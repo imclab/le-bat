@@ -1,3 +1,26 @@
+var Sound = require('../lib/sound/Sound');
+
 module.exports.index = function(req,res,next){
-	return res.render('client/index');
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	// Use a hardcoded set of mappings and sounds for current
+	// phase of development. This definitely has to be
+	// replaced later!
+
+	req.db.getAll(Sound.ModelInfo,null,function(err,result){
+		if(err)
+			return res.send(500, 'Internal Server Error');
+		
+		if(result.length){
+			var mappings = {};
+			for(var i = 1; i < 6; i++){
+				mappings[i] = result[0].file_path;
+			}
+			res.locals.mappings = mappings;
+			return res.render('client/index');
+		} else{
+			return res.send(400, 'No sounds present! Please upload some!');
+		}
+	})
 };

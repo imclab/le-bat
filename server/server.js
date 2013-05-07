@@ -34,7 +34,7 @@ tweetStream.on('tweet',function(data){
 	// we need specific coordinates!
 	if(data.coordinates){
 		websocket.broadcast({
-			sound_key : ~~(Math.random()*100)+1 // fine as result fits into 32-bit and will be changed later anyway
+			sound_key : ~~(Math.random()*5)+1 // fine as result fits into 32-bit and will be changed later anyway
 			, location : data.coordinates.coordinates
 			, timestamp : new Date(data.created_at).getTime()
 			, tweet : data.id_str
