@@ -1,0 +1,13 @@
+!!! 5
+html
+	head
+		title Client Page
+		link(rel='stylesheet', href='css/bootstrap.min.css')
+		| <script type='text/javascript'>
+		- var settingsJson = JSON.stringify(clientSettings)
+		| settings = !{settingsJson}
+		| </script>
+	body
+		h1 Le crazy project
+		a(href='/listen') listen
+		a(href='/admin') admin

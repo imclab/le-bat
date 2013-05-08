@@ -4,7 +4,11 @@ var AdminRoutes = require('./admin')
 module.exports.init = function(app){
 
 	app.get('/'
-		, ClientRoutes.index
+		, ClientRoutes.landing
+	);
+
+	app.get('/listen'
+		, ClientRoutes.listen
 	);
 
 	app.get('/admin'

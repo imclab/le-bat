@@ -1,6 +1,10 @@
 var Sound = require('../lib/sound/Sound');
 
-module.exports.index = function(req,res,next){
+module.exports.landing = function(req,res,next){
+	res.render('client/landing');
+}
+
+module.exports.listen = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 
@@ -18,7 +22,7 @@ module.exports.index = function(req,res,next){
 				mappings[i] = result[0].file_path;
 			}
 			res.locals.mappings = mappings;
-			return res.render('client/index');
+			return res.render('client/listen');
 		} else{
 			return res.send(400, 'No sounds present! Please upload some!');
 		}
