@@ -5,11 +5,11 @@ html
 		link(rel='stylesheet', href='css/bootstrap.min.css')
 		| <script type='text/javascript'>
 		- var settingsJson = JSON.stringify(clientSettings)
+		- var mappingsJson = JSON.stringify(mappings)
 		| settings = !{settingsJson}
+		| mappings = !{mappingsJson}
 		| </script>
 	body
 		h1 Hi
 		h2 for now please watch your console!
-		script(src="js/libs/jquery-1.9.1.min.js")
-		script(src="js/libs/bootstrap.min.js")
-		script(src="js/client/app.js")
+		script(src="js/libs/require/require.js", data-main="js/client/main")
