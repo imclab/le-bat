@@ -111,7 +111,14 @@ Trie.prototype.search = function(sequence, gotoFn, failFn) {
 		if(!currentNode[character]) {
 			currentNode = !failFn ? this.root : failFn.call(this, currentNode, character);
 			if(currentNode == this.root && !!this.root[character]) currentNode = this.root[character];
-		} else currentNode = currentNode[character];
+		} else {
+			if(!!gotoFn) {
+				gotoFn.call(this, currentNode, character).forEach(function(element) {
+					result.push({node: element, tail: i});
+				}, this);
+			}
+			currentNode = currentNode[character];
+		}
 		if(currentNode.terminal) result.push({ node: currentNode, tail: i });
 	}
 	result.forEach(function(element, i){ // Trading off performance for memory savings.
@@ -129,3 +136,23 @@ Trie.prototype.search = function(sequence, gotoFn, failFn) {
 	return result;
 }
 
+
+Trie.prototype._getNode = function(sequence) {
+	var currentNode = this.root,
+	sequence = sequence.toLowerCase();
+	for(var i = 0, n = sequence.length; i < n; ++i) {
+		var character = sequence.charAt(i);
+		if(!currentNode[character]) return null;
+		else currentNode = currentNode[character];
+	}
+	return currentNode;
+}
+
+
+
+Trie.prototype._getPrefix = function(node) {
+	var character = '';
+	for(var n in node.parent) if(node.parent[n] == node) { character = n; break; }
+	if(node.parent == this.root) return '_' + character;
+	return this._getPrefix(node.parent) + '-' + character; 
+} 

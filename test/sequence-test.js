@@ -2,6 +2,8 @@ var vows = require('vows')
 	, assert = require('assert')
 	, Sequence = require('../server/lib/sequence/Sequence')
 	, Matcher = require('../server/lib/sequence/Matcher')
+	, Trie = require('../server/lib/sequence/Trie')
+	, AhoCorasick = require('../server/lib/sequence/AhoCorasick')
 	, Splitter = require('../server/lib/sequence/Splitter')
 
 
@@ -43,22 +45,15 @@ vows.describe('string').addBatch({
 	, 'Matcher tests': {
 		topic : function() {
 			return { 
-				sequences: ["twitt", "twitter", "witt", "itter", "error"]
-				, text: "twitter wittnesses terror" 
+				sequences: ['twitt', 'twitter', 'witt', 'itter']
+				, text: 'twitter' 
 			};
 		}
-		, 'searching for raw sequences in plain trie': function (topic) {
-			var matcher = new Matcher();
+		, 'searching for raw sequences with Aho-Corasick': function (topic) {
+			var matcher = new Matcher({algorithm: 'aho-corasick'});
 			topic.sequences.forEach(function(element) { matcher._addRawSequence(element) });
 			var result = matcher.search(topic.text);
-			assert.equal(result.length, 2); // twitter, witt
-		}
-		, 'searching for raw sequences with suffix links': function (topic) {
-			var matcher = new Matcher();
-			topic.sequences.forEach(function(element) { matcher._addRawSequence(element) });
-			matcher._updateLinks();
-			var result = matcher.search(topic.text);
-			assert.equal(result.length, 6, "Not enough matches in this Aho-Corasick implementation"); // twitt, witt, twitter, itter, witt, error
+			assert.equal(result.length, 4); // twitt, witt, twitter, itter
 		}
 	}
 	, 'Store tests': {

@@ -1,5 +1,6 @@
 var Sequence = require('./Sequence')
 ,	Splitter = require('./Splitter')
+,	Matcher = require('./Matcher')
 ,	_ = require('underscore')
 
 module.exports = Store;
@@ -8,6 +9,7 @@ function Store() {
 	this.splitter = new Splitter({ignore: ['usernames', 'urls', 'punctuation', 'single_letters']});
 
 	this.sequences = {};
+	this.matcher = new Matcher({algorithm: 'aho-corasick'});
 
 	this.localUpdates = {};
 	this.lastLocalUpdate = 0;
@@ -33,11 +35,12 @@ Store.prototype.setDb = function(db) {
 Store.prototype.pullDb = function() {
 	var self = this;
 	if(this.db && this.db.ready) 
-		this.db.getAll(Sequence.ModelInfo, null, function(err, result){
+		this.db.getAll(Sequence.ModelInfo, {where: [{col: 'total_count', op: '>', val: 1}] }, function(err, result){
 			if(err) return;
 			result.forEach(function(element) {
 				self.sequences[element.content] = Sequence.fromObject(element);
 			});
+			self.matcher.addSequences(result);
 			self.lastDbPull = Date.now();
 		});
 }
@@ -70,6 +73,7 @@ Store.prototype.addRawSequences = function(sequences, timestamp) {
 			this.localUpdates[element] = this.sequences[element];
 		} else {
 			this.sequences[element] = new Sequence(null, element, timestamp, 1, false);
+			this.matcher._addRawSequence(element);
 			this.localUpdates[element] = this.sequences[element];
 		}
 	}, this);

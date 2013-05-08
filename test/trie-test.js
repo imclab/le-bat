@@ -52,13 +52,13 @@ vows.describe('Trie').addBatch({
 	}
 	, 'aho-corasick tests' : {
 		topic: {
-			sequences: ['lor', 'lorem', 'or']
-			, text: 'lorem ipsumdolor'
+			sequences: ['lor', 'lorem', 'or', 'rem']
+			, text: 'lorem'
 		}
 		, 'insertion test': function(topic) {
 			var trie = new AhoCorasick();
 			topic.sequences.forEach(function(element) { trie.add(element); });
-			//console.log(trie);
+			assert.equal(trie.search(topic.text).length, 4);
 		}
 	}
 }).export(module);
