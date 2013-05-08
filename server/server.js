@@ -1,4 +1,5 @@
 var _ = require('underscore')
+,	pjson = require('../package.json')
 ,	conf = require('../config')
 ,	TwitterStream = require('./lib/TwitterStream')
 ,	WebSocketServer = require('./lib/websocketServer')
@@ -83,6 +84,9 @@ app.configure(function(){
 	app.use(express.json());
 	app.use(express.urlencoded());
 
+	app.set('sitename', pjson.name);
+	app.set('pagetitle', '');
+	
 	app.use(function(req,res,next) {
 		res.locals.clientSettings = {
 			websocket: conf.websocket

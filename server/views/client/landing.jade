@@ -1,13 +1,38 @@
 !!! 5
 html
 	head
-		title Client Page
+		title &#x266b; #{settings.sitename}
 		link(rel='stylesheet', href='css/bootstrap.min.css')
 		| <script type='text/javascript'>
 		- var settingsJson = JSON.stringify(clientSettings)
 		| settings = !{settingsJson}
 		| </script>
 	body
-		h1 Le crazy project
-		a(href='/listen') listen
-		a(href='/admin') admin
+		header.jumbotron.subhead
+			div.container-fluid.page-header
+				h1 #{pagetitle}
+
+		div.container-fluid
+
+			div.row-fluid(style='height: 230px')
+				section#quicklinks
+					a.btn.btn-large.btn-primary(href='/listen') listen
+					a.btn.btn-large.btn-link(href='/admin') admin
+
+			hr
+			div.row-fluid
+			
+				section#concept
+					h2 Un concept incrediblé!
+					p
+						| For reallz?
+						br
+						br
+
+			hr
+			div.row-fluid
+				
+				section#concept
+					h2 Et stack de technology?
+					p
+						| Tell me more!
