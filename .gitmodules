@@ -1,0 +1,3 @@
+[submodule "frontend/theme/bootstrap"]
+	path = frontend/theme/bootstrap
+	url = git://github.com/jasny/bootstrap.git
