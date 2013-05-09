@@ -10,6 +10,8 @@ define([
 		// destination
 		this.panner = context.createPanner();
 		this.panner.maxDistance = 25;
+		this.panner.panningModel = 'HRTF';
+		this.panner.distanceModel = 'exponential';
 		this.panner.connect(destination);
 
 	}
