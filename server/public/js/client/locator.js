@@ -6,6 +6,7 @@ define([
 	var toRad = Math.PI / 180;
 	var toDeg = 180 / Math.PI;
 	var earthRadius = 6371; // in km
+	var maxDistance = 20038; // on earth in km
 
 	function degToRad(deg){
 		return deg * toRad;
@@ -66,20 +67,31 @@ define([
 
 			var brng = Math.atan2(y, x);
 			  
-			return (radToDeg(brng) + 360) % 360;
+			// atan should be between -PI and PI
+			// therefore bring it to a range between 0 and PI
+			return brng + Math.PI;
 		};
 
-		this.calcDistanceAndBearing = function(lat,lon){
+		this.geoPositionToCartesian = function(lat,lon){
+
 			lat = degToRad(lat);
 			lon = degToRad(lon);
 
 			var dLon = lon - this.lon;
+			var distance = this._calcDistance(lat,lon,dLon);
+			var bearing = this._calcBearing(lat,lon,dLon);
+
+			// calc x and y based on distance and angle
+			// and bring them to a value between -1,1
+			var x = distance * Math.cos(bearing) / maxDistance;
+			var z = distance * Math.sin(bearing) / maxDistance;
 
 			return {
-				distance : this._calcDistance(lat,lon,dLon),
-				bearing : this._calcBearing(lat,lon,dLon)
+				x : x
+				, y : 0
+				, z : z
 			};
-		};
+		}
 	}
 
 	// inherit from EventEmitter

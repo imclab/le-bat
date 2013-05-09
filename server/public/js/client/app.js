@@ -1,12 +1,12 @@
 define([
 	'./locator',
 	'./websocketConnection',
-	'./bufferLoader'
-],function(Locator,WebsocketConnection,BufferLoader){
+	'./bufferLoader',
+	'./soundFactory'
+],function(Locator,WebsocketConnection,BufferLoader,SoundFactory){
 
 	var wsUrl = 'ws://' + settings.host + ':' + settings.websocket.port;
-	var locator, websocket, audioContext;
-
+	var locator, websocket, audioContext, soundFactory;
 
 	function init(){
 		var isCompatible = testBrowserCompability();
@@ -45,8 +45,8 @@ define([
 
 		bufferLoader.on('ready',function(buffers){
 			console.log('successfully loaded and decoded buffers!')
-			console.log(buffers)
-
+			soundFactory = new SoundFactory(buffers,audioContext);
+			
 			// connect to the websocket
 			websocket.connect();
 		});
@@ -62,7 +62,11 @@ define([
 		});
 
 		websocket.on('data',function(data){
-			//console.log(data.sound_key);
+			var temp = locator.geoPositionToCartesian(data.location[0],data.location[1]);
+			data.x = temp.x;
+			data.y = temp.y
+			data.z = temp.z;
+			soundFactory.playSound(data);
 		});
 
 		websocket.on('close',function(){
