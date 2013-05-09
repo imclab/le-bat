@@ -22,7 +22,7 @@ define([
 
 	function testBrowserCompability(){
 		if(!navigator.geolocation) return false;
-		if(!window.webkitAudioContext) return false;
+		if(!(window.webkitAudioContext || window.AudioContext)) return false;
 		if(!window.WebSocket) return false;
 		
 		return true;
@@ -42,7 +42,7 @@ define([
 			bufferLoader.load();
 		});
 		
-		audioContext = new webkitAudioContext();
+		audioContext = window.webkitAudioContext ? new webkitAudioContext() : new AudioContext();
 		var bufferLoader = new BufferLoader(mappings,audioContext);
 
 		bufferLoader.on('ready',function(buffers){

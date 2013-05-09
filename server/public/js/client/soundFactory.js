@@ -6,7 +6,10 @@ define([
 		this.context = context;
 
 		// create a master gain node
-		this.mix = this.context.createGainNode();
+		// API changed a bit -> make sure to support old API
+		// implementations with the if
+
+		this.mix = this.context.createGain ? this.context.createGain() : this.mix = this.context.createGainNode();
 		this.mix.gain.value = 0.8;
 
 		// create a master dynamic compressor

@@ -40,7 +40,14 @@ define([
 		// set the panner's position so it points to (0,0,0)
 		this.panner.setOrientation(-x,-y,-z);
 
-		this.source.start(0);
+		// noteOn is deprecated in the new API
+		// spec. just supporting it for old browsers
+		
+		if(this.source.start){
+			this.source.start(0);
+		} else{
+			this.source.noteOn(0);
+		}
 	};
 
 	PositionSample.prototype.isPlaying = function(){
