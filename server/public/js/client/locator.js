@@ -88,7 +88,7 @@ define([
 
 			return {
 				x : x
-				, y : 0
+				, y : -4
 				, z : z
 			};
 		}

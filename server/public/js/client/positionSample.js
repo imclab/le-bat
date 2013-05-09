@@ -9,14 +9,15 @@ define([
 		// create a PannerNode and connect it to the given
 		// destination
 		this.panner = context.createPanner();
+		this.panner.maxDistance = 25;
 		this.panner.connect(destination);
 
 	}
 
 	PositionSample.prototype.play = function(x,y,z){
 
-		x = x * 100;
-		z = z * 100;
+		x = x * 25;
+		z = z * 25;
 
 		// create a AudioBufferSourceNode from the given buffer
 		// this might sound inefficient but it's actually the

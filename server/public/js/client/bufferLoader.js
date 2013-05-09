@@ -7,6 +7,7 @@ define([
 	function BufferLoader(urls,context){
 		
 		EventEmitter.call(this);
+		
 		this.context = context;
 		this.urlList = urls;
 		this.amountOfUrls = Object.keys(this.urlList).length;
