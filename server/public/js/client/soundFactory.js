@@ -4,6 +4,19 @@ define([
 	function SoundFactory(buffers,context){
 
 		this.context = context;
+
+		// create a master gain node
+		this.mix = this.context.createGainNode();
+
+		// create a master dynamic compressor
+		this.compressor = context.createDynamicsCompressor();
+
+		// hookup gain to the compressor
+		this.mix.connect(this.compressor);
+
+		// connect the compressor to the final output
+		this.compressor.connect(this.context.destination);
+
 		this.samples = {};
 
 		// // for now just create a single player
@@ -13,7 +26,7 @@ define([
 			break;
 		}
 
-		this.samples[key] = new SampleController(buffers[key],this.context.destination,this.context);
+		this.samples[key] = new SampleController(buffers[key],this.compressor,this.context);
 
 		this.playSound = function(data){
 			if(this.samples[data.sound_key]){
