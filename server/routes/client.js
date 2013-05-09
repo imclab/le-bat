@@ -19,8 +19,9 @@ module.exports.listen = function(req,res,next){
 		
 		if(result.length){
 			var mappings = {};
-			for(var i = 1; i < 6; i++){
-				mappings[i] = result[0].file_path;
+			var length = result.length < 8 ? result.length : 8;
+			for(var i = 1; i < length; i++){
+				mappings[i] = result[i].file_path;
 			}
 			res.locals.mappings = mappings;
 			return res.render('client/listen');
