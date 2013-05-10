@@ -11,26 +11,38 @@ html
 				div.span8
 					section#mappings
 						div.page-header
-							h2 Placeholder for mappings
+							h3 Placeholder for mappings
 						p [Put stuff here]
 						br
 						br
 
+			div.row-fluid
+				div.span8
 					section#sounds
 						div.page-header
-							h2 Uploaded sounds
-
+							h3 Available sounds
 						include soundTable
 
+				div.span4
+					section#upload
+						div.page-header
+							h3 Upload
+						include upload
+
+			div.row-fluid
+				div.span8
 					section#sequences
 						div.page-header
-							h2 Some sequences
-
+							h3 Some sequences
 						include sequenceTable
 
 				div.span4
-					div.row-fluid
-						include upload
+					section#mapping
+						div.page-header
+							h3 Mapping
+						include mapping
+
+				
 
 		script(src="js/libs/jquery/jquery-1.9.1.min.js")
 		script(src="js/libs/bootstrap/bootstrap.min.js")

@@ -6,11 +6,24 @@ var fs = require('fs')
 ,	Tag = require('../../../model/Tag')
 ,	TagSoundMapping = require('../../../model/TagSoundMapping');
 
+
+module.exports.getAll = function(req,res,next) {
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	req.db.getAll(Sound.ModelInfo, null, function(err, result) {
+		if(err) return res.send(500, err);
+		res.send(200, JSON.stringify({sounds: result}));
+	})
+}
+
+
+
 var publicDir = './frontend/public';
 var tempDir = publicDir + '/tmp';
 var soundsDir = publicDir + '/sounds';
 
-module.exports.index = function(req,res,next){
+module.exports.upload = function(req,res,next){
 
 	var form = new formidable.IncomingForm;
 	form.keepExtensions = true;

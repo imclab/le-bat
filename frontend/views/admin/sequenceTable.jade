@@ -1,19 +1,24 @@
-table.table
+table#sequenceTable.table.table-striped
 	thead
 		tr
 			th Sequence
 			th Count
 			th Blocked
+			th Mappings
 	tbody
 		for sequence in sequences
-			tr(data-id='#{sequence.id}')
+			tr.sequenceRow(data-id='#{sequence.id}', data-content='#{sequence.content}')
 				td
-					strong #{sequence.content}
+					| #{sequence.content}
 
 				td
 					| #{sequence.total_count}
 
 				td
-					.btn-group.blocked(data-toggle='buttons-radio')
+					.btn-group.blocked(data-toggle='buttons-radio', data-value='#{sequence.blocked}')
 							button.btn.btn-mini(name='yes') Yes
 							button.btn.btn-mini(name='no') No
+
+				td 
+					button.btn.btn-mini(name='add-mapping')
+						i.iconic-plus

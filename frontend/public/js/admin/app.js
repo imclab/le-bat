@@ -1,7 +1,9 @@
 define([
 	'./upload',
-	'./sound'
-],function(upload, sound){
+	'./sound',
+	'./sequences',
+	'./mapping'
+],function(upload, sound, sequences, mapping){
 
 	var app = {};
 

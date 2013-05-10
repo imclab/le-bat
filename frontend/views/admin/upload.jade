@@ -1,21 +1,20 @@
-form#upload_form(action="/admin/upload", method="post", enctype="multipart/form-data")
-	legend upload new sound file
+form#upload_form(action="/admin/sound/upload", method="post", enctype="multipart/form-data")
 	p
 		label(for="name") Name
-		input.span10(type="text", name="name", placeholder="name")
+		input.span12(type="text", name="name", placeholder="Flamingo 1")
 	p
 		label(for="tags") Tags
-		input.span10(type="text", name="tags", placeholder="taglist")
+		input.span12(type="text", name="tags", placeholder="birds, loud, ...")
 		span.help-block provide tags as comma seperated list
 	p
 		label(for="source") Source
-		input.span10(type="text", name="source", placeholder="source")
+		input.span12(type="text", name="source", placeholder="http://...")
 	p
 		label(for="license") License
-		input.span10(type="text", name="license", placeholder="license")
+		input.span12(type="text", name="license", placeholder="CC")
 	p
 		label(for="author") Author
-		input.span10(type="text", name="author", placeholder="author")
+		input.span12(type="text", name="author", placeholder="John Doe")
 	p
 		label(for="sound") Soundfile
 		div.fileupload.fileupload-new(data-provides="fileupload")
@@ -30,9 +29,9 @@ form#upload_form(action="/admin/upload", method="post", enctype="multipart/form-
 						| Change
 					input(type="file", name="sound")
 				a.btn.fileupload-exists(href="#", data-dismiss="fileupload") Remove
-	p
-		input#submit_file.btn.btn-primary(type="submit", value="upload", data-loading-text="Loading...")
+	.form-actions
+		input.submit.btn.btn-primary(type="submit", value="Upload", data-loading-text="Loading...")
 		
-#progress_bar_container
+.progressBarContainer.hide
 	div.progress
-		div.bar#progress_bar
+		div.bar

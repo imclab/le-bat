@@ -34,8 +34,8 @@ function getSequences(req, res, done) {
 			desc: true
 		}],
 		limit: {
-			offset: 100,
-			count: 100
+			offset: 42,
+			count: 42
 		}
 	}
 	req.db.getAll(Sequence.ModelInfo, options, function(err, result) {
