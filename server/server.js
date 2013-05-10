@@ -5,9 +5,6 @@ var _ = require('underscore')
 ,	WebSocketServer = require('./lib/websocketServer')
 ,	Database = require('./lib/Database')
 ,	Store = require('./lib/sequence/Store')
-,	http = require('http')
-,	express = require('express')
-,	Routes = require('./routes/index');
 
 var websocket = new WebSocketServer({port : conf.websocket.port});
 
@@ -59,10 +56,6 @@ db.on('error', function(err) {
 	process.exit();
 });
 
-db.on('ready', function() {
-	// Fetch words, etc ..
-})
-
 db.init();
 
 
@@ -71,56 +64,3 @@ tweetStream.on('tweet', function(data) {
 	sequenceStore.parseText(data.text, new Date(data.created_at).getTime());
 })
 sequenceStore.setDb(db);
-
-
-var app = express();
-
-app.configure(function(){
-
-	app.use(express.static(__dirname + '/public'));
-    app.set('views',__dirname + '/views');
-    app.set('view engine', 'jade');
-
-	app.use(express.json());
-	app.use(express.urlencoded());
-
-	app.set('sitename', pjson.name);
-	app.set('pagetitle', '');
-	
-	app.use(function(req,res,next) {
-		res.locals.clientSettings = {
-			websocket: conf.websocket
-			, host: req.host
-		};
-		next();
-	})
-
-	app.use(function(req, res, next) {
-		req.db = db;
-		next();
-	})
-    
-    app.use(app.router);
-
-    // 404 handler
-    app.use(function(req, res, next){
-        return res.send(404);
-    });
-
-    // 500 handler
-    app.use(function(err, req, res, next) {
-    	console.log(err);
-        return res.send(500);
-    });
-});
-
-// init routes
-Routes.init(app);
-try{
-	http.createServer(app).listen(conf.http.port);
-	console.log('HTTP server running on: ' + conf.http.port);
-} catch(err){
-	console.log("HTTP server error");
-	console.log(err);
-	//process.exit();
-}

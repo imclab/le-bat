@@ -1,4 +1,4 @@
-var Sound = require('../lib/sound/Sound');
+var Sound = require('../../model/Sound');
 
 module.exports.landing = function(req,res,next){
 	res.locals.pagetitle = 'Le crazy social sound in realtime';

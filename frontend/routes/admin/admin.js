@@ -2,9 +2,9 @@ var fs = require('fs')
 ,	formidable = require('formidable')
 ,	async = require('async')
 ,	_ = require('underscore')
-,	Sound = require('../lib/sound/Sound')
-,	Tag = require('../lib/mapping/Tag')
-,	TagSoundMapping = require('../lib/mapping/TagSoundMapping');
+,	Sound = require('../../../model/Sound')
+,	Tag = require('../../../model/Tag')
+,	TagSoundMapping = require('../../../model/TagSoundMapping');
 
 
 module.exports.index = function(req,res,next){

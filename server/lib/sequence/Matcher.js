@@ -1,5 +1,5 @@
 var _ = require('underscore')
-	, Sequence = require('./Sequence')
+	, Sequence = require('../../../model/Sequence')
 	, AhoCorasick = require('./AhoCorasick')
 	, Trie = require('./Trie')
 

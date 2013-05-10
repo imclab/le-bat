@@ -1,4 +1,4 @@
-var Database = require('../Database');
+var Database = require('../server/lib/Database');
 
 module.exports = User;
 

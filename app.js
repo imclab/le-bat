@@ -15,3 +15,20 @@ tweetServer.on('start',function(process,data){
 });
 
 tweetServer.start();
+
+
+var frontend = new(forever.Monitor)('frontend.js',{
+    'silent': false        
+    , 'max' : 1
+    , 'minUptime': 3000      
+    , 'spinSleepTime': 2000  
+    , 'command': 'node'      
+    , 'options': []          
+    , 'sourceDir': './frontend'
+});
+
+frontend.on('start',function(process,data){
+    console.log('Frontend running on ' + data.pid);
+});
+
+frontend.start();
