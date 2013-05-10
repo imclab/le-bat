@@ -3,12 +3,13 @@ define([
 	'./websocketConnection',
 	'./bufferLoader',
 	'./soundFactory',
-	'./volumeSlider'
-],function(Locator,WebsocketConnection,BufferLoader,SoundFactory,VolumeSlider){
+	'./volumeSlider',
+	'./progressBar'
+],function(Locator,WebsocketConnection,BufferLoader,SoundFactory,VolumeSlider,ProgressBar){
 
 	var wsUrl = 'ws://' + settings.host + ':' + settings.websocket.port;
 	var locator, websocket, audioContext, soundFactory;
-	var volumeSlider;
+	var progressBar, volumeSlider;
 
 	function init(){
 		var isCompatible = testBrowserCompability();
@@ -29,6 +30,8 @@ define([
 	}
 
 	function _initialize(){
+		progressBar = new ProgressBar('#progress_bar_container');
+
 		locator = new Locator();
 
 		locator.on('error',function(err){
@@ -39,6 +42,7 @@ define([
 		locator.on('ready',function(){
 			// load the buffers
 			console.log('located successfully! Loading buffers...');
+			progressBar.tick(5);
 			bufferLoader.load();
 		});
 		
@@ -48,9 +52,14 @@ define([
 		bufferLoader.on('ready',function(buffers){
 			console.log('successfully loaded and decoded buffers!')
 			soundFactory = new SoundFactory(buffers,audioContext);
+			progressBar.finish();
 			volumeSlider.show();
 			// connect to the websocket
 			websocket.connect();
+		});
+
+		bufferLoader.on('progress',function(amount){
+			progressBar.tick((95 / 100)* amount);	
 		});
 
 		bufferLoader.on('error',function(err){

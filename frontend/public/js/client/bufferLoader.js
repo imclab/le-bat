@@ -32,7 +32,7 @@ define([
 						if(++self.loadCount == self.amountOfUrls){
 							self.emit('ready',self.bufferList);
 						} else{
-							console.log('decoded ' + self.loadCount + ' out of ' + self.amountOfUrls + ' buffers');
+							self.emit('progress',self.loadCount * 100 / self.amountOfUrls);
 						}
 					}
 					,function(err){

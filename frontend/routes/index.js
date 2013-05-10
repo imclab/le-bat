@@ -1,5 +1,5 @@
 var AdminRoutes = require('./admin/admin')
-,	ClientRoutes = require('../../server/routes/client');
+,	ClientRoutes = require('./client/client');
 
 module.exports.init = function(app){
 
