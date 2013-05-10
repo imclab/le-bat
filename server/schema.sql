@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `sequence_sound` (
 
 CREATE TABLE IF NOT EXISTS `sound` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL,
   `sha1` varchar(28) CHARACTER SET ascii NOT NULL,
   `file_path` text NOT NULL,
   `source` text NOT NULL,
