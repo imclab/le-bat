@@ -1,4 +1,4 @@
-var AdminRoutes = require('./admin/admin')
+var AdminRoutes = require('./admin/index')
 ,	ClientRoutes = require('./client/client');
 
 module.exports.init = function(app){
@@ -11,13 +11,5 @@ module.exports.init = function(app){
 		, ClientRoutes.listen
 	);
 
-	app.get('/admin'
-		// might wanna add some login/session stuff
-		, AdminRoutes.index
-	);
-
-	app.post('/admin/upload'
-		, AdminRoutes.uploadSound
-	);
-
+	AdminRoutes.init(app);
 }
