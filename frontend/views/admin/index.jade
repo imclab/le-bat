@@ -15,68 +15,17 @@ html
 						p [Put stuff here]
 						br
 						br
+						
 					section#sounds
 						div.page-header
 							h1 Uploaded sounds
-						table.table
-							thead
-								tr
-									th Info
-									th Audio
-							tbody
-								for sound in sounds
-									tr
-										td: p
-											strong #{sound.name}
-											|  by #{sound.author} (#{sound.license} license) from 
-											a(href='#{sound.source}') #{sound.source}
 
-										td
-											audio(src='#{sound.file_path}')
-											button.play.btn.btn-mini: i.iconic-play
+						include soundTable
 
 
 				div.span4
 					div.row-fluid
-						div.span12
-							form#upload_form(action="/admin/upload", method="post", enctype="multipart/form-data")
-								legend upload new sound file
-								p
-									label(for="name") Name
-									input.span10(type="text", name="name", placeholder="name")
-								p
-									label(for="tags") Tags
-									input.span10(type="text", name="tags", placeholder="taglist")
-									span.help-block provide tags as comma seperated list
-								p
-									label(for="source") Source
-									input.span10(type="text", name="source", placeholder="source")
-								p
-									label(for="license") License
-									input.span10(type="text", name="license", placeholder="license")
-								p
-									label(for="author") Author
-									input.span10(type="text", name="author", placeholder="author")
-								p
-									label(for="sound") Soundfile
-									div.fileupload.fileupload-new(data-provides="fileupload")
-										div.input-append
-											div.uneditable-input.span3
-												i.icon-file.fileupload-exists
-												span.fileupload-preview
-											span.btn.btn-file
-												span.fileupload-new
-													| Select file
-												span.fileupload-exists
-													| Change
-												input(type="file", name="sound")
-											a.btn.fileupload-exists(href="#", data-dismiss="fileupload") Remove
-								p
-									input#submit_file.btn.btn-primary(type="submit", value="upload", data-loading-text="Loading...")
-					div.row-fluid#progress_bar_container.hide
-						div.span10
-							div.progress
-								div.bar#progress_bar
+						include upload
 
 		script(src="js/libs/jquery/jquery-1.9.1.min.js")
 		script(src="js/libs/bootstrap/bootstrap.min.js")

@@ -3,8 +3,14 @@ define([
 ],function(page){
 
 	var setSoundButtonIcon = function($target, isPlaying) {
-		if(!isPlaying) $target.find('i').removeClass('iconic-stop').addClass('iconic-play');
-		else $target.find('i').removeClass('iconic-play').addClass('iconic-stop');
+		if(!isPlaying) {
+			$target.removeClass('btn-danger');
+			$target.find('i').removeClass('iconic-stop').addClass('iconic-play');
+		}
+		else {
+			$target.addClass('btn-danger');
+			$target.find('i').removeClass('iconic-play').addClass('iconic-stop');
+		}
 	};
 
 	$('.play').each(function(){
