@@ -6,12 +6,15 @@ var fs = require('fs')
 ,	Tag = require('../../../model/Tag')
 ,	TagSoundMapping = require('../../../model/TagSoundMapping');
 
+var publicDir = './frontend/public';
+var tempDir = publicDir + '/tmp';
+var soundsDir = publicDir + '/sounds';
 
 module.exports.index = function(req,res,next){
 
 	var form = new formidable.IncomingForm;
 	form.keepExtensions = true;
-	form.uploadDir = './server/public/sounds';
+	form.uploadDir = tempDir;
 	form.hash = "sha1";
 
 	form.parse(req,function(err,fields,files){
@@ -51,7 +54,7 @@ module.exports.index = function(req,res,next){
 
 
 function validate(req,fields,file,done){
-	if(!file) return done({error: 'missing file', httpCode: 400, message: 'No file supplied.'});
+	if(!file || (!file.size && !file.name)) return done({error: 'missing file', httpCode: 400, message: 'No file supplied.'});
 	if(file.type != 'audio/mp3') return done({error : 'wrong filetype', httpCode : 415 , message : 'Given file was not a mp3!'});
 	if(!fields.name) return done({error : 'missing name', httpCode : 400, message : 'File without name! Did not save file on server'});
 	if(!fields.tags) return done({error : 'missing tags', httpCode : 400, message : 'File without tags! Did not save file on server'});
@@ -63,7 +66,7 @@ function validate(req,fields,file,done){
 function renameFile(req,fields,file,done){
 	var oldPath = './' + file.path;
 	var extension = oldPath.substr(oldPath.lastIndexOf('.'));
-	var newPath = './server/public/sounds/' + file.hash + extension;
+	var newPath = soundsDir + '/' + file.hash + extension;
 
 	fs.rename(oldPath,newPath,function(err){
 		if(err){
@@ -76,7 +79,7 @@ function renameFile(req,fields,file,done){
 
 function saveSound(req,fields,file,filePath,done){
 	if(true) // TODO: check if it was uploaded (and not on a different server for instance)
-		filePath = filePath.replace('./server/public', ''); // store the path ready to download
+		filePath = filePath.replace(publicDir, ''); // store the path ready to download
 
 	var sound = Sound.fromObject({
 		id: null
