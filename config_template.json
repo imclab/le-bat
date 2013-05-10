@@ -5,8 +5,7 @@
 		, "access_token" : "YOUR TWITTER ACCESS TOKEN"
 		, "access_secret" : "YOUR TWITTER ACCESS SECRET"
 		, "query" : {
-			"track" : ["OPTIONAL", "WORDS", "TO", "TRACK", "FOR"]
-			, "locations" : ["SOUTHWEST-LAT,SOUTHWEST-LONG,NORTHEAST-LAT,NORTHEAST-LONG", ".."]
+			"locations" : ["-180,-90,180,90"]
 			, "language" : "A TWO LETTER LANGUAGE CODE"
 		}
 	}
