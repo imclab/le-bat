@@ -1,0 +1,19 @@
+table.table
+	thead
+		tr
+			th Sequence
+			th Count
+			th Blocked
+	tbody
+		for sequence in sequences
+			tr(data-id='#{sequence.id}')
+				td
+					strong #{sequence.content}
+
+				td
+					| #{sequence.total_count}
+
+				td
+					.btn-group.blocked(data-toggle='buttons-radio')
+							button.btn.btn-mini(name='yes') Yes
+							button.btn.btn-mini(name='no') No
