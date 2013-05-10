@@ -6,15 +6,18 @@ var fs = require('fs')
 ,	Tag = require('../lib/mapping/Tag')
 ,	TagSoundMapping = require('../lib/mapping/TagSoundMapping');
 
+
 module.exports.index = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 
 	req.db.getAll(Sound.ModelInfo, null, function(err, result) {
 		if(err) return res.send(500, err);
+		console.log(result);
 		res.render('admin/index', {sounds: result});
 	})
 };
+
 
 module.exports.uploadSound = function(req,res,next){
 
@@ -46,6 +49,7 @@ module.exports.uploadSound = function(req,res,next){
 				// TODO: rewind changes on DB
 				// You can only rewind if you know where it got stuck..
 				console.log(err.error);
+				if(!file) return res.send(err.httpCode, err.message);
 				fs.unlink(file.path,function(unlinkErr){
 					if(unlinkErr) console.log(unlinkErr);
 					return res.send(err.httpCode,err.message);
@@ -59,7 +63,9 @@ module.exports.uploadSound = function(req,res,next){
 
 
 function validate(req,fields,file,done){
+	if(!file) return done({error: 'missing file', httpCode: 400, message: 'No file supplied.'});
 	if(file.type != 'audio/mp3') return done({error : 'wrong filetype', httpCode : 415 , message : 'Given file was not a mp3!'});
+	if(!fields.name) return done({error : 'missing name', httpCode : 400, message : 'File without name! Did not save file on server'});
 	if(!fields.tags) return done({error : 'missing tags', httpCode : 400, message : 'File without tags! Did not save file on server'});
 
 	return done(null,req,fields,file);
@@ -85,7 +91,9 @@ function saveSound(req,fields,file,filePath,done){
 		filePath = filePath.replace('./server/public', ''); // store the path ready to download
 
 	var sound = Sound.fromObject({
-		sha1 : file.hash
+		id: null
+		, name : fields.name
+		, sha1 : file.hash
 		, file_path : filePath
 		, source : fields.source
 		, license : fields.license

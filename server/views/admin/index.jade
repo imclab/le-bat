@@ -4,7 +4,8 @@ html
 		title Admin Page
 		link(rel='stylesheet', href='css/bootstrap.min.css')
 	body
-		div.page-alert#page_alert.hide
+		div#page-alert.page-alert
+
 		div.container-fluid
 			div.row-fluid
 				div.span8
@@ -26,18 +27,23 @@ html
 								for sound in sounds
 									tr
 										td: p
-											| SHA1: #{sound.sha1}
-											br
-											| By #{sound.author} (#{sound.license} license) from 
+											strong #{sound.name}
+											|  by #{sound.author} (#{sound.license} license) from 
 											a(href='#{sound.source}') #{sound.source}
 
-										td: audio(src='#{sound.file_path}', controls)
+										td
+											audio(src='#{sound.file_path}')
+											button.play.btn.btn-mini: i.iconic-play
+
 
 				div.span4
 					div.row-fluid
 						div.span12
-							form#upload_form(action="sound", method="post", enctype="multipart/form-data")
+							form#upload_form(action="/admin/upload", method="post", enctype="multipart/form-data")
 								legend upload new sound file
+								p
+									label(for="name") Name
+									input.span10(type="text", name="name", placeholder="name")
 								p
 									label(for="tags") Tags
 									input.span10(type="text", name="tags", placeholder="taglist")
@@ -63,7 +69,7 @@ html
 													| Select file
 												span.fileupload-exists
 													| Change
-												input(type="file", name="sound")
+												input(type="file", name="admin_upload")
 											a.btn.fileupload-exists(href="#", data-dismiss="fileupload") Remove
 								p
 									input#submit_file.btn.btn-primary(type="submit", value="upload", data-loading-text="Loading...")
@@ -71,6 +77,8 @@ html
 						div.span10
 							div.progress
 								div.bar#progress_bar
+
 		script(src="js/libs/jquery/jquery-1.9.1.min.js")
 		script(src="js/libs/bootstrap/bootstrap.min.js")
-		script(src="js/admin/app.js")
+
+		script(src="js/libs/require/require.js", data-main="js/admin/main")
