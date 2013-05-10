@@ -146,7 +146,7 @@ Database.prototype._convertQueryOptions = function(options) {
 				var str = '';
 				var isExpression = element.hasOwnProperty('exp');
 				if(isExpression) str += element.exp + '(';
-				str += element.hasOwnElement('col') ? mysql.escapeId(element.col) : '';
+				str += element.hasOwnProperty('col') ? mysql.escapeId(element.col) : '';
 				if(isExpression) str += ')';
 				str += element.desc ? ' DESC' : ' ASC';
 				order.push(str);
