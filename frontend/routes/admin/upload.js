@@ -35,7 +35,7 @@ module.exports.index = function(req,res,next){
 			, lookupTags
 			, saveNewTags
 			, saveTagSoundMappings
-		],function(err){
+		],function(err,sound){
 			if(err){
 				// TODO: rewind changes on DB
 				// You can only rewind if you know where it got stuck..
@@ -46,7 +46,7 @@ module.exports.index = function(req,res,next){
 					return res.send(err.httpCode,err.message);
 				});
 			} else{
-				return res.send(200,'File uploaded successfully');
+				return res.send(200, JSON.stringify(sound));
 			}
 		});
 	});
@@ -148,15 +148,15 @@ function saveNewTags(req,sound,tags,tagSoundMappings,done){
 		for(var i = result.insertId; i < result.insertId + result.affectedRows; i++){
 			tagSoundMappings.push(new TagSoundMapping(null,i,sound.id,0));
 		}
-		return done(null,req,tagSoundMappings);
+		return done(null,req,sound,tagSoundMappings);
 	});
 }
 
-function saveTagSoundMappings(req,mappings,done){
+function saveTagSoundMappings(req,sound,mappings,done){
 	req.db.setAll(TagSoundMapping.ModelInfo,mappings,function(err,result){
 		if(err)
 			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
 		
-		return done(null);
+		return done(null,sound);
 	});
 }

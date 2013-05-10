@@ -1,6 +1,7 @@
 define([
-	'../shared/page'
-],function(page){
+	'../shared/page',
+	'./sound'
+],function(page, sound){
 
 	var $progressBar = $('#progress_bar');
 	var $progressBarContainer = $('#progress_bar_container');
@@ -36,8 +37,9 @@ define([
 		};
 
 		xhr.onload = function(){
-			var success = this.status === 200;
-			showUploadInfo(success,this.response);
+			var success = this.status == 200;
+			showUploadInfo(success, success ? 'File uploaded successfully' : this.response);
+			sound.addRow($.parseJSON(this.response));
 			self.button('reset');
 		};
 

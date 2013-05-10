@@ -2,10 +2,11 @@ require.config({
 	//baseUrl : '',
 	paths : {
 		'jquery' : '/js/libs/jquery/jquery-1.9.1.min',
-		'plugins' : '/js/libs/require/plugins'
+		'plugins' : '/js/libs/require/plugins',
+		'views' : '/js/views'
 	}
 });
 
-require(['plugins/domReady','app'],function(domReady,app){
+require(['plugins/domReady', 'plugins/jade-runtime', 'app'],function(domReady, jadeRuntime, app){
 	domReady(app.init);
 });

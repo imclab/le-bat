@@ -1,0 +1,8 @@
+tr
+	td: p
+		strong #{sound.name}
+		|  by #{sound.author} (#{sound.license} license) from 
+		a(href='#{sound.source}') #{sound.source}
+
+	td
+		include ./soundPlayer

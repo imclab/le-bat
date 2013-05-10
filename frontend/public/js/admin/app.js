@@ -5,7 +5,9 @@ define([
 
 	var app = {};
 
-	app.init = function() {};
+	app.init = function() {
+		sound.createPlayer($('body'));
+	};
 
 	return app;
 });
