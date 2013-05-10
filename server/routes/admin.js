@@ -13,7 +13,6 @@ module.exports.index = function(req,res,next){
 
 	req.db.getAll(Sound.ModelInfo, null, function(err, result) {
 		if(err) return res.send(500, err);
-		console.log(result);
 		res.render('admin/index', {sounds: result});
 	})
 };
