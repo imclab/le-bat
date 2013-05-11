@@ -7,7 +7,7 @@ table#sequenceTable.table.table-striped
 			th Mappings
 	tbody
 		for sequence in sequences
-			tr.sequenceRow(data-id='#{sequence.id}', data-content='#{sequence.content}')
+			tr.sequenceRow(id='sequence_#{sequence.id}', data-id='#{sequence.id}', data-content='#{sequence.content}')
 				td
 					| #{sequence.content}
 
@@ -19,6 +19,8 @@ table#sequenceTable.table.table-striped
 							button.btn.btn-mini(name='yes') Yes
 							button.btn.btn-mini(name='no') No
 
-				td 
-					button.btn.btn-mini(name='add-mapping')
-						i.iconic-plus
+				td
+					ul.sequence-mappings.inline
+						li.edit
+							button.btn.btn-mini(name='add-mapping')
+								i.iconic-plus

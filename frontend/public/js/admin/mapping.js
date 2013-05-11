@@ -16,6 +16,17 @@ define([
 	}
 
 
+	exports.getMappingsFor = function(ids, callback, scope) {
+		$.get('/admin/mapping/get/'+ids.join(','), function(data) {
+			callback.call(scope, true, data);
+		},'json')
+		.fail(function(jqXHR, textStatus, errorThrown){
+			showResponseInfo(false, errorThrown);
+			callback.call(scope, false, errorThrown);
+		});
+	}
+
+
 	exports.editForSequence = function(id, content) {
 		$sequenceId = $container.find('[name=sequence_id]').val(id);
 		$sequenceContent = $container.find('[name=sequence_content]').val(content);
@@ -27,8 +38,8 @@ define([
 				$soundSelect.append('<option value="'+sound.id+'">'+sound.name+'</option>');	
 			});
 		}, 'json')
-		.fail(function(){
-			showResponseInfo(false, 'Could not load initial data');
+		.fail(function(jqXHR, textStatus, errorThrown){
+			showResponseInfo(false, errorThrown);
 		})
 		.done(function(){
 			$.get('/admin/mapping/get/'+id, function(data) {
@@ -36,8 +47,8 @@ define([
 					$soundSelect.val(data.sounds[0].id);
 				$soundSelect.removeAttr('disabled');
 			},'json')
-			.fail(function(){
-				showResponseInfo(false, 'Could not load mappings');
+			.fail(function(jqXHR, textStatus, errorThrown){
+				showResponseInfo(false, errorThrown);
 			});
 		})
 	}

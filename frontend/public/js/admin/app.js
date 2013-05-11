@@ -8,7 +8,7 @@ define([
 	var app = {};
 
 	app.init = function() {
-		sound.createPlayer($('body'));
+		sound.initPlayers($('body'));
 	};
 
 	return app;

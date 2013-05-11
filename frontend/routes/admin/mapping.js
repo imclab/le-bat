@@ -32,12 +32,15 @@ module.exports.get = function(req,res,next){
 
 
 function getMapping(req, res, done) {
-	var options = {
-		where: [{
+	var options = {where: []};
+	req.params.sequenceId.split(',').forEach(function(id) {
+		options.where.push({
 			col: 'sequence_id',
-			val: req.params.sequenceId
-		}]
-	}
+			val: id
+		});
+		options.where.push('or')
+	});
+	if(options.where.length) options.where.pop(); // removing last or
 	req.db.getAll(SequenceSoundMapping.ModelInfo, options, function(err, result) {
 		if(err) return res.send(500, err);
 		if(!result.length) return res.send(200, JSON.stringify([]));
@@ -57,7 +60,7 @@ function getSounds(req, res, done) {
 		options.where.push('or');
 	});
 	if(options.where.length) options.where.pop(); // removing last or
-	
+
 	req.db.getAll(Sound.ModelInfo, options, function(err, result) {
 		if(err) return res.send(500, err);
 		res.locals.sounds = result;

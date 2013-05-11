@@ -1,8 +1,11 @@
 define([
-	'./mapping'
-],function(mapping){
+	'./mapping',
+	'./sound'
+],function(mapping, sounds){
 
-	var sequences = {};
+	var sequences = [];
+
+	var $container = $('#sequences');
 
 	var setBlocked = function($toggleGroup, blocked) {
 		if(!blocked) {
@@ -15,11 +18,14 @@ define([
 		$toggleGroup.data('value', blocked);
 	}
 
-	$('.sequenceRow').each(function(){
+	// Initialized rows for interactivity
+	$container.find('.sequenceRow').each(function(){
 		var $this = $(this);
 		var $row = $this;
-		var $toggleGroup = $this.find('.blocked');
 
+		sequences.push($row.data('id'));
+
+		var $toggleGroup = $this.find('.blocked');
 		$toggleGroup.data('yes', $toggleGroup.find('[name=yes]'));
 		$toggleGroup.data('no', $toggleGroup.find('[name=no]'));
 		$toggleGroup.data('current', 'no');
@@ -35,7 +41,22 @@ define([
 		$this.find('[name=add-mapping]').click(function(){
 			mapping.editForSequence($row.data('id'), $row.data('content'));
 		});
+	});
+
+	// Get sound mappings for the table
+	mapping.getMappingsFor(sequences, function(success, data) {
+		if(!success) return;
+		var soundObjects = {};
+		data.sounds.forEach(function(sound) { soundObjects[sound.id] = sound; });
+		data.sequenceSoundMappings.forEach(function(mapping) {
+			var $row = $container.find('#sequence_'+mapping.sequence_id);
+			var $player = $('<li>').append(sounds.createPlayer(soundObjects[mapping.sound_id]));
+			$row.find('.sequence-mappings').append($player);
+		});
+		sounds.initPlayers($container);
 	})
+
+
 
 	return sequences;
 });
