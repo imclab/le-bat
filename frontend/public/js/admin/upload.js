@@ -7,7 +7,7 @@ define([
 	var $progressBar = $container.find('.bar');
 	var $progressBarContainer = $container.find('.progressBarContainer');
 
-	function showUploadInfo(success,message){
+	function showResponseInfo(success, message){
 		page.showPageAlert(message, success ? 'success' : 'error');
 		$progressBarContainer.hide();
 	}
@@ -33,15 +33,15 @@ define([
     	};
 
 		xhr.onerror = function(e){
-			showUploadInfo(false,'An error occured while submitting the file!');
+			showResponseInfo(false,'An error occured while submitting the file!');
 			self.button('reset');
 		};
 
 		xhr.onload = function(){
 			var success = this.status == 200;
-			showUploadInfo(success, success ? 'File uploaded successfully' : this.response);
+			showResponseInfo(success, success ? 'File uploaded successfully' : this.response);
+			if(!success) return self.button('reset');
 			sound.addRow($.parseJSON(this.response));
-			self.button('reset');
 		};
 
 		xhr.send(formData);

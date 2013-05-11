@@ -40,7 +40,7 @@ Store.prototype.pullDb = function() {
 			result.forEach(function(element) {
 				self.sequences[element.content] = Sequence.fromObject(element);
 			});
-			self.matcher.addSequences(result);
+			//self.matcher.addSequences(result);
 			self.lastDbPull = Date.now();
 		});
 }
@@ -73,7 +73,7 @@ Store.prototype.addRawSequences = function(sequences, timestamp) {
 			this.localUpdates[element] = this.sequences[element];
 		} else {
 			this.sequences[element] = new Sequence(null, element, timestamp, 1, false);
-			this.matcher._addRawSequence(element);
+			//this.matcher._addRawSequence(element);
 			this.localUpdates[element] = this.sequences[element];
 		}
 	}, this);

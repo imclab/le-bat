@@ -93,13 +93,13 @@ Database.prototype.setAll = function(modelInfo, objects, callback) {
 	// console.log(query);
 	
 	this.connection.query(query, function(err, result) {
-		callback.call(this, err, result);
 		if(err){ self.emit('error', err); return; }
 		var useStrint = typeof result.insertId == 'string';
 		// insert id for multiple rows returns FIRST inserted id
 		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
 		for(var i=0, n=objects.length; i<n; ++i) 
 			if(objects[i][modelInfo.autoIncrement] == null) objects[i][modelInfo.autoIncrement] = result.insertId++;
+		callback.call(this, err, result);
 	});
 }
 

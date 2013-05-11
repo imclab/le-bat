@@ -1,12 +1,12 @@
 form#mapping_form(action="/admin/mapping/set", method="post", enctype="multipart/form-data")
 	input(type="hidden", name="sequence_id", value='')
 	p
-		label(for="sequence") Sequence
-		input.span12(type="text", name="sequence", placeholder="", disabled)
+		label(for="sequence_content") Sequence
+		input.span12(type="text", name="sequence_content", placeholder="", disabled)
 
 	p
-		label(for="sound") Sound
-		select.span12(name="sound", disabled)
+		label(for="sound_id") Sound
+		select.span12(name="sound_id", disabled)
 
 	.form-actions
 		input.submit.btn.btn-primary(type="submit", value="Submit", data-loading-text="Loading...")

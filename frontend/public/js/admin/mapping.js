@@ -15,6 +15,34 @@ define([
 		$progressBarContainer.hide();
 	}
 
+
+	exports.editForSequence = function(id, content) {
+		$sequenceId = $container.find('[name=sequence_id]').val(id);
+		$sequenceContent = $container.find('[name=sequence_content]').val(content);
+		$soundSelect = $container.find('[name=sound_id]');
+
+		$.get('/admin/sound/all', function(data) {
+			$soundSelect = $container.find('[name=sound_id]').empty().append('<option value="null">-- Choose a sound --</option>');
+			data.sounds.forEach(function(sound) {
+				$soundSelect.append('<option value="'+sound.id+'">'+sound.name+'</option>');	
+			});
+		}, 'json')
+		.fail(function(){
+			showResponseInfo(false, 'Could not load initial data');
+		})
+		.done(function(){
+			$.get('/admin/mapping/get/'+id, function(data) {
+				if(data.sequenceSoundMappings) 
+					$soundSelect.val(data.sounds[0].id);
+				$soundSelect.removeAttr('disabled');
+			},'json')
+			.fail(function(){
+				showResponseInfo(false, 'Could not load mappings');
+			});
+		})
+	}
+
+
 	$container.find('.submit').on('click',function(event){
 		event.preventDefault();
 		
@@ -36,45 +64,24 @@ define([
     	};
 
 		xhr.onerror = function(e){
-			showUploadInfo(false,'An error occured while submitting the file!');
+			showResponseInfo(false,'An error occured while submitting the form!');
 			self.button('reset');
 		};
 
 		xhr.onload = function(){
 			var success = this.status == 200;
 			showResponseInfo(success, success ? 'Mapping submitted successfully' : this.response);
-			//sound.addRow($.parseJSON(this.response));
-			self.button('reset');
+			if(!success) return self.button('reset');
+			var sequenceSoundMapping = $.parseJSON(this.response);
+			console.log(sequenceSoundMapping);
+			//sound.addRow();
 		};
 
 		xhr.send(formData);
 	});
 
-	exports.editForSequence = function(id, content) {
-		$container.find('[name=sequence]').val(content);
 
-		$.get('/admin/sound/all', function(data) {
-			$soundSelect = $container.find('[name=sound]').empty().append('<option value="null">-- Choose a sound --</option>');
-			data.sounds.forEach(function(sound) {
-				$soundSelect.append('<option value="'+sound.id+'">'+sound.name+'</option>');	
-			});
-		}, 'json').fail(function(){
-			showResponseInfo(false, 'Could not load data');
-		}).done(function(){
-			$.get('/admin/mapping/get/'+id, function(data) {
-				if(!data.sequenceSoundsMappings) {
-					// no mapping there yet
-				} else {
-					
-				}
-				$soundSelect.removeAttr('disabled');
-			},'json');
-			
-		})
-
-		
-		
-	}
+	
 
 	return exports;
 });

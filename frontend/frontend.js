@@ -10,9 +10,10 @@ var _ = require('underscore')
 var db = new Database(conf.db);
 
 db.on('error', function(err) {
-	console.log('Database error');
-	console.log(err);
-	process.exit();
+	console.log('Database error', err);
+	console.trace();
+	console.log('Shutting down in 2 seconds.');
+	setTimeout(process.exit, 2000);
 });
 
 db.init();
