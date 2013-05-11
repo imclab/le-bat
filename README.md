@@ -11,9 +11,10 @@ The goal of **Tweeting Natural** is to take real-time input from the Twitter Str
 ## development setup
 ---
 
-1. make sure you have node and npm installed
-2. run the npm install command
+1. make sure you have `node` and `npm` installed
+2. run the `npm install` command
+3. run `make all` (Note: if you are on Windows, get MSYS or Cygwin and put it in your PATH env variable before running `make`)
 3. copy the file `config_template.json` to a new file `config.json` 
-4. fill out the data in the `config.json` file
+4. fill in your host settings in the `config.json` file
 5. in your mysql instance (needed), add a database that matches your config.json
-6. run
+6. run `node app.js`

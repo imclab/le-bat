@@ -4,16 +4,19 @@ JADE_VIEWS_SOURCE_DIR = ./views
 JADE_VIEWS_TARGET_DIR = ./public/js/views
 
 DATE=$(shell date +%I:%M%p)
-CHECK=\033[32m✔\033[39m
 NODE_BIN_DIR = ../node_modules/.bin
 
+GIT_IGNORE = "*\n!.gitignore"
+
+all: jade
 
 #
 # CLEANS PRIOR BUILDS
 #
 
 clean:
-	@rm -r ${JADE_VIEWS_TARGET_DIR}/*/*
+	rm -r ${JADE_VIEWS_TARGET_DIR}/*
+	@echo -e ${GIT_IGNORE} > ${JADE_VIEWS_TARGET_DIR}/.gitignore
 
 
 #
@@ -28,4 +31,6 @@ jade: $(JADE_TARGET_FILES)
 ${JADE_VIEWS_TARGET_DIR}/%.js: ${JADE_VIEWS_SOURCE_DIR}/%.jade
 	@mkdir -p "$(@D)"
 	@node build/precompileJade.js "$<" "$@"
-	
+
+
+.PHONY: clean all

@@ -1,4 +1,6 @@
-# TODO: specialized Makefile to build Bootstrap with custom LESS overrides in ./less
+#
+# Specialized Makefile to build Bootstrap with custom LESS overrides in ./less
+#
 
 THEME_TARGET_DIR = ../public
 
@@ -15,19 +17,23 @@ THEME_LESS_SOURCE_DIR = ./less
 THEME_LESS = ${THEME_LESS_SOURCE_DIR}/theme.less
 
 DATE=$(shell date +%I:%M%p)
-CHECK=\033[32m✔\033[39m
 NODE_BIN_DIR = ../../node_modules/.bin
 
+GIT_IGNORE = "*\n!.gitignore"
+
+all: theme
 
 #
 # CLEANS PRIOR BUILDS
 #
 
 clean:
-	rm -r ${THEME_TARGET_DIR}/css
-	rm -r ${THEME_TARGET_DIR}/img
-	rm -r ${THEME_TARGET_DIR}/js/libs/bootstrap
-	rm -r ${THEME_TARGET_DIR}/js/minified
+	rm -r ${THEME_TARGET_DIR}/css/*
+	@echo -e ${GIT_IGNORE} > ${THEME_TARGET_DIR}/css/.gitignore
+	rm -r ${THEME_TARGET_DIR}/img/*
+	@echo -e ${GIT_IGNORE} > ${THEME_TARGET_DIR}/img/.gitignore
+	rm -r ${THEME_TARGET_DIR}/js/libs/bootstrap/*
+	@echo -e ${GIT_IGNORE} > ${THEME_TARGET_DIR}/js/libs/bootstrap/.gitignore
 
 
 #
@@ -42,9 +48,9 @@ theme: theme-img theme-font theme-css theme-js
 # JS COMPILE
 #
 
-theme-js: theme/js/*.js
+theme-js: ${BOOTSTRAP_JS_TARGET_DIR}/*.js
 
-theme/js/*.js: ${BOOTSTRAP_SOURCE_DIR}/js/*.js
+${BOOTSTRAP_JS_TARGET_DIR}/*.js: ${BOOTSTRAP_SOURCE_DIR}/js/*.js
 	mkdir -p ${BOOTSTRAP_JS_TARGET_DIR}
 
 	# Original Bootstrap
@@ -66,9 +72,9 @@ theme/js/*.js: ${BOOTSTRAP_SOURCE_DIR}/js/*.js
 # CSS COMPLILE
 #
 
-theme-css: theme/css/*.css
+theme-css: ${THEME_TARGET_DIR}/css/*.css
 
-theme/css/*.css: ${BOOTSTRAP_SOURCE_DIR}/less/*.less ${THEME_LESS_SOURCE_DIR}/*.less
+${THEME_TARGET_DIR}/css/*.css: ${BOOTSTRAP_SOURCE_DIR}/less/*.less ${THEME_LESS_SOURCE_DIR}/*.less
 	mkdir -p ${THEME_TARGET_DIR}/css
 	${NODE_BIN_DIR}/recess --compile ${THEME_LESS} > ${THEME_TARGET_DIR}/css/theme.css
 	${NODE_BIN_DIR}/recess --compress ${THEME_LESS} ${JASNY_BOOTSTRAP_LESS} ${BOOTSTRAP_LESS} > ${THEME_TARGET_DIR}/css/theme.min.css
@@ -81,9 +87,9 @@ theme/css/*.css: ${BOOTSTRAP_SOURCE_DIR}/less/*.less ${THEME_LESS_SOURCE_DIR}/*.
 # IMAGES
 #
 
-theme-img: theme/img/*
+theme-img: ${THEME_TARGET_DIR}/img/*
 
-theme/img/*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
+${THEME_TARGET_DIR}/img/*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
 	mkdir -p ${THEME_TARGET_DIR}/img
 	cp ${BOOTSTRAP_SOURCE_DIR}/img/* ${THEME_TARGET_DIR}/img/
 	cp ./img/* ${THEME_TARGET_DIR}/img/
@@ -92,9 +98,9 @@ theme/img/*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
 # FONTS
 #
 
-theme-font: theme/font/*
+theme-font: ${THEME_TARGET_DIR}/font/*
 
-theme/font/*: ${BOOTSTRAP_SOURCE_DIR}/font/* ./font/*
+${THEME_TARGET_DIR}/font/*: ${BOOTSTRAP_SOURCE_DIR}/font/* ./font/*
 	mkdir -p ${THEME_TARGET_DIR}/font
 	cp ${BOOTSTRAP_SOURCE_DIR}/font/* ${THEME_TARGET_DIR}/font/
 	cp ./font/* ${THEME_TARGET_DIR}/font/
