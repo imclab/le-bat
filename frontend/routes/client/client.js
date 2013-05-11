@@ -1,11 +1,6 @@
 var Sound = require('../../../model/Sound')
 
-module.exports.landing = function(req,res,next){
-	res.locals.pagetitle = 'Le crazy social sound in realtime';
-	res.render('client/landing');
-}
-
-module.exports.listen = function(req,res,next){
+module.exports.index = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 
