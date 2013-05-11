@@ -4,6 +4,8 @@ define([
 	'views/admin/soundPlayer'
 ],function(page, soundRowJade, soundPlayerJade){
 
+	var exports = {};
+
 	var sounds = {};
 
 	var currentlyPlayingTargets = {};
@@ -48,7 +50,7 @@ define([
 		}
 	};
 
-	sounds.initPlayers = function(context) {
+	exports.initPlayers = function(context) {
 		$('.play', context).each(function(){
 			var $this = $(this);
 			var $audio = $this.parent().find('audio');
@@ -70,17 +72,39 @@ define([
 	}
 
 
-	sounds.createPlayer = function(sound) {
+	exports.createPlayer = function(sound) {
 		return $(soundPlayerJade({ sound: sound }));
 	}
 
 	
-	sounds.addRow = function(sound) {
+	exports.addRow = function(sound) {
 		var $row = $(soundRowJade({sound: sound}));
 		$('#soundTable tbody').append($row);
-		sounds.initPlayers($row);
+		exports.initPlayers($row);
 	}
 
-	return sounds;
+
+	exports.getByIds = function(soundIds, callback, scope) {
+		var result = [];
+		for(var i=soundIds.length-1; i>=0; --i)
+			if(sounds[soundIds[i]]) {
+				result.push(sounds[soundIds[i]]);
+				soundIds.splice(i, 1);
+			}
+		if(soundIds.length == 0) return callback.call(scope, true, result);
+
+		$.get('/admin/sound/get/'+soundIds.join(','), function(data) {
+			if(data.sounds.length) 
+				data.sounds.forEach(function(sound){
+					result.push(sounds[sound.id] = sound);
+				});
+			callback.call(scope, true, result);
+		},'json')
+		.fail(function(jqXHR, textStatus, errorThrown){
+			showResponseInfo(false, errorThrown);
+		});
+	}
+
+	return exports;
 
 });

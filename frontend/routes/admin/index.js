@@ -8,6 +8,10 @@ module.exports.init = function(app){
 		, main.index
 	);
 
+	app.get('/admin/sound/get/:soundId'
+		, sound.get
+	);
+
 	app.get('/admin/sound/all'
 		, sound.getAll
 	);

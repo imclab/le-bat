@@ -40,8 +40,9 @@ define([
 		xhr.onload = function(){
 			var success = this.status == 200;
 			showResponseInfo(success, success ? 'File uploaded successfully' : this.response);
-			if(!success) return self.button('reset');
-			sound.addRow($.parseJSON(this.response));
+			if(success) 
+				sound.addRow($.parseJSON(this.response));
+			self.button('reset');
 		};
 
 		xhr.send(formData);

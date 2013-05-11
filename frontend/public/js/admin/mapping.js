@@ -1,7 +1,9 @@
 define([
+	'require',
 	'../shared/page',
-	'./sound'
-],function(page, sound){
+	'./sound',
+	'./sequences' // circular dep
+],function(require, page, sounds, sequences){
 
 	var exports = {};
 
@@ -82,10 +84,15 @@ define([
 		xhr.onload = function(){
 			var success = this.status == 200;
 			showResponseInfo(success, success ? 'Mapping submitted successfully' : this.response);
-			if(!success) return self.button('reset');
-			var sequenceSoundMapping = $.parseJSON(this.response);
-			console.log(sequenceSoundMapping);
-			//sound.addRow();
+			if(success) {
+				var sequenceSoundMapping = $.parseJSON(this.response);
+				sounds.getByIds([sequenceSoundMapping.sound_id], function(success, soundObjects){
+					if(success && soundObjects.length > 0)
+						require('./sequences').addMappingToRow(sequenceSoundMapping.sequence_id, soundObjects[0]);
+				});
+				
+			}
+			self.button('reset');
 		};
 
 		xhr.send(formData);

@@ -3,6 +3,8 @@ define([
 	'./sound'
 ],function(mapping, sounds){
 
+	var exports = {};
+
 	var sequences = [];
 
 	var $container = $('#sequences');
@@ -43,20 +45,24 @@ define([
 		});
 	});
 
+
+	exports.addMappingToRow = function(sequenceId, sound) {
+		var $row = $container.find('#sequence_'+sequenceId);
+		var $player = $('<li>').append(sounds.createPlayer(sound));
+		$row.find('.sequence-mappings').append($player);
+		sounds.initPlayers($player);
+	}
+
+
 	// Get sound mappings for the table
 	mapping.getMappingsFor(sequences, function(success, data) {
 		if(!success) return;
 		var soundObjects = {};
 		data.sounds.forEach(function(sound) { soundObjects[sound.id] = sound; });
 		data.sequenceSoundMappings.forEach(function(mapping) {
-			var $row = $container.find('#sequence_'+mapping.sequence_id);
-			var $player = $('<li>').append(sounds.createPlayer(soundObjects[mapping.sound_id]));
-			$row.find('.sequence-mappings').append($player);
+			exports.addMappingToRow(mapping.sequence_id, soundObjects[mapping.sound_id]);
 		});
-		sounds.initPlayers($container);
-	})
+	}) 
 
-
-
-	return sequences;
+	return exports;
 });

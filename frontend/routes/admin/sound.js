@@ -7,6 +7,28 @@ var fs = require('fs')
 ,	TagSoundMapping = require('../../../model/TagSoundMapping');
 
 
+module.exports.get = function(req,res,next) {
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	var options = {where: []};
+	req.params.soundId.split(',').forEach(function(id) {
+		options.where.push({
+			col: 'id',
+			val: id
+		});
+		options.where.push('or')
+	});
+	if(options.where.length) options.where.pop(); // removing last or
+
+	req.db.getAll(Sound.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		res.send(200, JSON.stringify({sounds: result}));
+	})
+}
+
+
+
 module.exports.getAll = function(req,res,next) {
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
