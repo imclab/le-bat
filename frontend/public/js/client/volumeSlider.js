@@ -9,10 +9,15 @@ define([
 		EventEmitter.call(this);
 
 		this.$el = $(selector);
+		this.$range = this.$el.children('input[type="range"]');
+		this.$value = this.$el.children('#rangevalue');
 
 		var self = this;
-		this.$el.on('change',function(event){
-			var val = self.$el.val();
+		this.$range.on('change',function(event){
+			
+			var val = self.$range.val();
+
+			self.$value.val(val);
 			self.emit('changed',val / 100);
 		});
 	}

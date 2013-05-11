@@ -30,7 +30,7 @@ define([
 	}
 
 	function _initialize(){
-		progressBar = new ProgressBar('#progress_bar_container');
+		progressBar = new ProgressBar('#progress_container');
 
 		locator = new Locator();
 
@@ -84,7 +84,7 @@ define([
 			console.log('websocket closed');
 		});
 
-		volumeSlider = new VolumeSlider('#volume_slider');
+		volumeSlider = new VolumeSlider('#slider');
 
 		volumeSlider.on('changed',function(val){
 			soundFactory.setVolume(val);

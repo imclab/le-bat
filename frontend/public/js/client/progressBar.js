@@ -20,10 +20,11 @@ define([
 	ProgressBar.prototype.finish = function(){
 		this.currentPercentage = 100;
 		this._setValue();
+		this.$container.hide();
 	};
 
 	ProgressBar.prototype._setValue = function(){
-		this.$loaderHeader.text('Loading....... ' + this.currentPercentage + '%');
+		this.$loaderHeader.text('Loading....... ' + ~~(this.currentPercentage) + '%');
 		this.$progress.css('width',this.currentPercentage + '%');
 	};
 
