@@ -32,7 +32,7 @@ app.configure(function(){
 
 	app.set('sitename', pjson.name);
 	app.set('pagetitle', '');
-	
+
 	app.use(function(req,res,next) {
 		res.locals.clientSettings = {
 			websocket: conf.websocket
@@ -43,6 +43,8 @@ app.configure(function(){
 
 	app.use(function(req, res, next) {
 		req.db = db;
+		if(conf.tools && conf.tools.ffmpeg)
+			req.ffmpeg = conf.tools.ffmpeg;
 		next();
 	})
     

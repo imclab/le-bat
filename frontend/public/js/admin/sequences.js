@@ -56,7 +56,7 @@ define([
 
 	// Get sound mappings for the table
 	mapping.getMappingsFor(sequences, function(success, data) {
-		if(!success) return;
+		if(!success || !data.sounds) return;
 		var soundObjects = {};
 		data.sounds.forEach(function(sound) { soundObjects[sound.id] = sound; });
 		data.sequenceSoundMappings.forEach(function(mapping) {

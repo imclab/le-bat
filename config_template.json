@@ -23,4 +23,10 @@
 	, "http" : {
 		"port" : "THE HTTP PORT TO LISTEN ON"
 	}
+	, "tools" : {
+		"ffmpeg" : {
+			"bin" : "OPTIONAL PATH TO FFMPEG BINARY. REMOVE WHOLE TOOL ENTRY IF FFMPEG IS NOT PRESENT ON THE SYSTEM."
+			, "bitrate" : "96k"
+		}
+	}
 }

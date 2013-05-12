@@ -76,10 +76,8 @@ module.exports.upload = function(req,res,next){
 				// You can only rewind if you know where it got stuck..
 				console.log(err.error);
 				if(!file) return res.send(err.httpCode, err.message);
-				fs.unlink(file.path,function(unlinkErr){
-					if(unlinkErr) console.log(unlinkErr);
-					return res.send(err.httpCode,err.message);
-				});
+				rollbackFs([file.path])
+				return res.send(err.httpCode,err.message);
 			} else{
 				return res.send(200, JSON.stringify(sound));
 			}
@@ -87,10 +85,17 @@ module.exports.upload = function(req,res,next){
 	});
 };
 
+function rollbackFs(paths) {
+	paths.forEach(function(path){
+		fs.unlink(path,function(unlinkErr){
+			if(unlinkErr) console.log(unlinkErr);
+		});
+	})
+}
 
 function validate(req,fields,file,done){
 	if(!file || (!file.size && !file.name)) return done({error: 'missing file', httpCode: 400, message: 'No file supplied.'});
-	if(file.type != 'audio/mp3') return done({error : 'wrong filetype', httpCode : 415 , message : 'Given file was not a mp3!'});
+	if(!req.ffmpeg && file.type != 'audio/mp3') return done({error : 'wrong filetype', httpCode : 415 , message : 'Given file was not a mp3 and there is no ffmpeg to convert it to mp3!'});
 	if(!fields.name) return done({error : 'missing name', httpCode : 400, message : 'File without name! Did not save file on server'});
 	if(!fields.tags) return done({error : 'missing tags', httpCode : 400, message : 'File without tags! Did not save file on server'});
 
@@ -100,16 +105,49 @@ function validate(req,fields,file,done){
 
 function renameFile(req,fields,file,done){
 	var oldPath = './' + file.path;
-	var extension = oldPath.substr(oldPath.lastIndexOf('.'));
-	var newPath = soundsDir + '/' + file.hash + extension;
+	var newPath = soundsDir + '/' + file.hash + '.mp3';
 
-	fs.rename(oldPath,newPath,function(err){
-		if(err){
-			return done({error : err, httpCode : 500, message : 'Could not save file due to an internal error.'});
-		}
-		file.path = newPath;
-		return done(null,req,fields,file,newPath);
-	});
+	if(!req.ffmpeg) {
+		fs.rename(oldPath,newPath,function(err){
+			if(err){
+				rollbackFs([oldPath]);
+				return done({error : err, httpCode : 500, message : 'Could not save file due to an internal error.'});
+			}
+			file.path = newPath;
+			return done(null,req,fields,file,newPath);
+		});
+	} else {
+		var tempPath = tempDir + '/' + file.hash + '_.mp3';
+		var proc = require('child_process').spawn(req.ffmpeg.bin, ['-n', '-i', oldPath, '-ab', req.ffmpeg.bitrate, tempPath]);
+		var err = '';
+		proc.stderr.on('data', function(data) { err += data.toString(); });
+		proc.on('close', function(code) {
+			if(code) return done({error: err, httpCode: 500, message: 'FFmpeg failed: ' + err});
+			var newHash = require('crypto').createHash('sha1');
+			var stream = fs.createReadStream(tempPath, { encoding: 'binary' });
+			stream.addListener('data', function(chunk) { newHash.update(chunk); });
+			stream.addListener('close', function() {
+				var digest = newHash.digest('hex');
+				newPath = soundsDir + '/' + digest + '.mp3';
+				if(fs.existsSync(newPath)) {
+					rollbackFs([oldPath, tempPath]);
+					return done({error: err, httpCode: 400, message: 'File already exists'});
+				}
+				fs.rename(tempPath, newPath, function(err) {
+					if(err) {
+						rollbackFs([oldPath, tempPath]);
+						return done({error : err, httpCode : 500, message : 'Could not save file due to an internal error.'});
+					}
+					rollbackFs([oldPath]);
+					file.path = newPath;
+					file.hash = digest;
+					return done(null,req,fields,file,newPath);
+				})
+			})
+		})
+
+	}
+	
 }
 
 function saveSound(req,fields,file,filePath,done){

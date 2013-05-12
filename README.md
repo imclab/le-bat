@@ -13,8 +13,9 @@ The goal of this project is to take real-time input from the Twitter Streaming A
 1. make sure you have `node` and `npm` installed
 2. run the `npm install` command
 3. run `make all` (Note: if you are on Windows, get MSYS or Cygwin and put it in your PATH env variable before running `make`)
-3. copy the file `config_template.json` to a new file `config.json` 
-4. fill in your host settings in the `config.json` file
-5. in your mysql instance (needed), add a database that matches your config.json
-6. run `node app.js`
-7. open your browser and point it to right url
+4. optional: get ffmpeg (http://www.ffmpeg.org/download.html) and install it for more input media coverage.
+5. copy the file `config_template.json` to a new file `config.json`
+6. fill in your host settings in the `config.json` file (if you have ffmpeg, also specify the path to its binary)
+7. in your mysql instance (needed), add a database that matches your config.json
+8. run `node app.js`
+9. open your browser and point it to right url
