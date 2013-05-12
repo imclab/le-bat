@@ -1,8 +1,9 @@
 define([
 	'SampleController'
 ],function(SampleController){
-	function SoundFactory(buffers,context){
+	function SoundFactory(buffers,context,offset){
 
+		this.scheduleOffset = offset || 5000;
 		this.context = context;
 
 		// create a master gain node
@@ -29,15 +30,23 @@ define([
 	}
 
 	SoundFactory.prototype.playSound = function(data){
+
+		var scheduleTime = this._addRandomMilliseconds(data.timestamp);
+		scheduleTime = scheduleTime - (+new Date) + this.scheduleOffset;
+		scheduleTime = scheduleTime / 1000; // to seconds for audio scheduling
+
 		if(this.samples[data.sound_key]){
-			var played = this.samples[data.sound_key].play(data.x,data.y,data.z);
+			var played = this.samples[data.sound_key].play(data.x,data.y,data.z,scheduleTime);
 			if(!played) console.log('dropped sound for key: ' + data.sound_key);
 		}
 	};
 
 	SoundFactory.prototype.setVolume = function(val){
-		console.log(val);
 		this.mix.gain.value = val;
+	};
+
+	SoundFactory.prototype._addRandomMilliseconds = function(seconds){
+		return seconds + ~~(Math.random() * 1000);
 	};
 
 	return SoundFactory;

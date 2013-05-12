@@ -13,12 +13,12 @@ define([
 		}
 	}
 
-	SampleController.prototype.play = function(x,y,z){
+	SampleController.prototype.play = function(x,y,z,when){
 		this.current = this.current % SampleController.queueLength;
 		var player = this.players[this.current];
 		
 		if(!player.isPlaying()){
-			player.play(x,y,z);
+			player.play(x,y,z,when);
 			this.current++;
 			return true;
 		}

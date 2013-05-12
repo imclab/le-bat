@@ -16,8 +16,9 @@ define([
 
 	}
 
-	PositionSample.prototype.play = function(x,y,z){
+	PositionSample.prototype.play = function(x,y,z,when){
 
+		when = when || 0;
 		x = x * 25;
 		z = z * 25;
 
@@ -42,11 +43,10 @@ define([
 
 		// noteOn is deprecated in the new API
 		// spec. just supporting it for old browsers
-		
 		if(this.source.start){
-			this.source.start(0);
+			this.source.start(when);
 		} else{
-			this.source.noteOn(0);
+			this.source.noteOn(when);
 		}
 	};
 
@@ -56,7 +56,7 @@ define([
 		if(!this.source) return false;
 		// check if our AudioBufferSource is done playing
 		if(this.source.playbackState == 3) return false;
-		// we are free
+		// we are not free
 		return true;
 	}
 
