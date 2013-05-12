@@ -156,6 +156,7 @@ function saveSound(req,fields,file,filePath,done){
 
 	var sound = Sound.fromObject({
 		id: null
+		, user_id : 0 // TODO: FILL IN
 		, name : fields.name
 		, sha1 : file.hash
 		, file_path : filePath
