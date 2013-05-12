@@ -1,13 +1,13 @@
 var wsServer = require('ws').Server
 ,	util = require('util')
-,	events = require('events');
+,	events = require('events')
+,	uuid = require('uuid');
 
 module.exports = WebSocketServer;
 
 function WebSocketServer(options){
 	this.port = options.port;
 	this.clients = {};
-	this.id = 0;
 
 	events.EventEmitter.call(this);
 }
@@ -27,7 +27,6 @@ WebSocketServer.prototype.listen = function(){
 
 		client.on('close',function(){
 			delete self.clients[client._clientId];
-			console.log(self.clients);
 		});
 	});
 
@@ -35,8 +34,8 @@ WebSocketServer.prototype.listen = function(){
 };
 
 WebSocketServer.prototype.generateId = function(){
-	// for now a simple counter
-	return this.id++;
+	// generate RFC4122 v4 UUID
+	return uuid.v4();
 };
 
 WebSocketServer.prototype.broadcast = function(message){
