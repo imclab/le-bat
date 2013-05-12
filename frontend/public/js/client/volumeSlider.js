@@ -10,7 +10,7 @@ define([
 
 		this.$el = $(selector);
 		this.$range = this.$el.children('input[type="range"]');
-		this.$value = this.$el.children('#rangevalue');
+		this.$value = this.$el.children('.rangevalue');
 
 		var self = this;
 		this.$range.on('change',function(event){

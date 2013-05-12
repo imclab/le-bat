@@ -84,7 +84,7 @@ define([
 			console.log('websocket closed');
 		});
 
-		volumeSlider = new VolumeSlider('#slider');
+		volumeSlider = new VolumeSlider('.volumeSlider');
 
 		volumeSlider.on('changed',function(val){
 			soundFactory.setVolume(val);

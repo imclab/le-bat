@@ -3,7 +3,6 @@ html
 	head
 		title Client Page
 		link(rel='stylesheet', href='css/theme.min.css')
-		link(rel='stylesheet', href='css/client/listen.css')
 		| <script type='text/javascript'>
 		- var settingsJson = JSON.stringify(clientSettings)
 		- var mappingsJson = JSON.stringify(mappings)
@@ -11,9 +10,10 @@ html
 		| mappings = !{mappingsJson}
 		| </script>
 	body
-		div
-			div.span6.centered#progress_container
-				include progress
-			div.span6.centered.hide#slider
-				include volume
+		div.clientContent
+			div
+				div.span6.centered#progress_container
+					include progress
+				div.span6.centered.hide.volumeSlider
+					include volume
 		script(src="js/libs/require/require.js", data-main="js/client/main")
