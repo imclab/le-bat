@@ -17,10 +17,21 @@ define([
 		this._setValue();
 	};
 
+	ProgressBar.prototype.tickInterpolated = function(value,max){
+		this.currentPercentage += this._interpolate(value,max);
+		this._setValue();
+	};
+
 	ProgressBar.prototype.finish = function(){
 		this.currentPercentage = 100;
 		this._setValue();
 		this.$container.hide();
+	};
+
+	ProgressBar.prototype._interpolate = function(value,max){
+
+    	var valueScaled = value / 100;
+    	return valueScaled * max;
 	};
 
 	ProgressBar.prototype._setValue = function(){

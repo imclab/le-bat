@@ -10,6 +10,7 @@ define([
 	var wsUrl = 'ws://' + settings.host + ':' + settings.websocket.port;
 	var locator, websocket, audioContext, soundFactory;
 	var progressBar, volumeSlider;
+	var timerOffset = 5000, timerOffsetInterval, timerCountdown = 0;
 
 	function init(){
 		var isCompatible = testBrowserCompability();
@@ -51,15 +52,13 @@ define([
 
 		bufferLoader.on('ready',function(buffers){
 			console.log('successfully loaded and decoded buffers!')
-			soundFactory = new SoundFactory(buffers,audioContext);
-			progressBar.finish();
-			volumeSlider.show();
+			soundFactory = new SoundFactory(buffers,audioContext,timerOffset);
 			// connect to the websocket
 			websocket.connect();
 		});
 
 		bufferLoader.on('progress',function(amount){
-			progressBar.tick((95 / 100)* amount);	
+			progressBar.tickInterpolated(amount,60);
 		});
 
 		bufferLoader.on('error',function(err){
@@ -67,9 +66,23 @@ define([
 		});
 
 		websocket = new WebsocketConnection(wsUrl);
-
+	
 		websocket.on('connected',function(){
 			console.log('websocket connected successfully');
+
+			timerOffsetInterval = setInterval(function(){
+
+				timerCountdown++;
+				var tickAmount = (1000 / (timerOffset - 2000)) * 100;
+				if(!(tickAmount * timerCountdown <= 100)){
+					progressBar.finish();
+					volumeSlider.show();
+					clearInterval(timerOffsetInterval);
+				} else{
+					progressBar.tickInterpolated(tickAmount,35);
+				}
+
+			},1000);
 		});
 
 		websocket.on('data',function(data){

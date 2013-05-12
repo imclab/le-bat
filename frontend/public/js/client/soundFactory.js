@@ -11,7 +11,7 @@ define([
 		// implementations with the if
 
 		this.mix = this.context.createGain ? this.context.createGain() : this.mix = this.context.createGainNode();
-		this.mix.gain.value = 0.8;
+		this.mix.gain.value = 0.7;
 
 		// create a master dynamic compressor
 		this.compressor = context.createDynamicsCompressor();

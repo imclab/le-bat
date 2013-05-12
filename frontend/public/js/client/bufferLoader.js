@@ -32,7 +32,7 @@ define([
 						if(++self.loadCount == self.amountOfUrls){
 							self.emit('ready',self.bufferList);
 						} else{
-							self.emit('progress',self.loadCount * 100 / self.amountOfUrls);
+							self.emit('progress',100 / self.amountOfUrls);
 						}
 					}
 					,function(err){
