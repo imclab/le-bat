@@ -25,7 +25,6 @@
 		, "mysql" : "2.0.0-alpha7"
 		, "underscore" : "1.4.4"
 		, "express" : "3.2.2"
-		, "jade" : "0.29.0"
 		, "xregexp" : "2.0.0"
 		, "formidable" : "1.0.14"
 		, "async" : "0.2.8"
