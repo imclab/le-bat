@@ -114,6 +114,8 @@ Database.prototype._validateOperator = function(op) {
 		case '<>':
 		case 'and':
 		case 'or': 
+		case '(':
+		case ')':
 			return op;
 		default: 
 			return false;

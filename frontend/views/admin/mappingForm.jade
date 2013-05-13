@@ -1,4 +1,4 @@
-form#mapping_form(action="/admin/mapping/set", method="post", enctype="multipart/form-data")
+form#mapping_form(action="/admin/mapping/#{sets[0].id}/set", method="post", enctype="multipart/form-data")
 	input(type="hidden", name="sequence_id", value='')
 	p
 		label(for="sequence_content") Sequence

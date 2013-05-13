@@ -7,7 +7,7 @@ var formidable = require('formidable')
 ,	SequenceSoundSet = require('../../../model/SequenceSoundSet');
 
 
-module.exports.index = function(req, res, next) {
+module.exports.index = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 
@@ -15,17 +15,50 @@ module.exports.index = function(req, res, next) {
 			function(done){
 				return done(null, req, res)
 			}
-		], function(err, req, res){
+			, getSequenceSoundSets
+			, getSequences
+		],function(err){
 			if(err){
 				console.log(err.error);
 				res.send(err.httpCode, err.message);
 			} else{
-				return res.send(200, JSON.stringify({
-				}));
+				return res.render('admin/mappingIndex');
 			}
 		});
+};
+
+function getSequenceSoundSets(req, res, done) {
+	req.db.getAll(SequenceSoundSet.ModelInfo, { where: [{ col: 'id', val: req.params.setId }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		if(!result.length) return done({error: 'Unknown set id requested', httpCode: 404, message: 'Set does not exist.'});
+		if(result[0].user_id != req.user.id) return done({error: 'Tried to edit another user\'s set', httpCode: 403, message: 'Can\'t edit other user\'s sets'})
+		res.locals.sets = result;
+		done(null, req, res);
+	})
 }
 
+function getSequences(req, res, done) {
+	var options = {
+		order: [{
+			col: 'total_count',
+			desc: true
+		}],
+		limit: {
+			offset: 42,
+			count: 42
+		}
+	}
+	req.db.getAll(Sequence.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sequences = result;
+		done(null, req, res);
+	})
+}
+
+
+/******************************************************************************
+ * Route editSet
+ *****************************************************************************/
 
 module.exports.editSet = function(req, res, next) {
 	if(!req.db || !req.db.ready) 
@@ -100,7 +133,9 @@ function saveSet(req,res,fields,next) {
 }
 
 
-
+/******************************************************************************
+ * Route get
+ *****************************************************************************/
 
 module.exports.get = function(req,res,next){
 	if(!req.db || !req.db.ready) 
@@ -127,7 +162,8 @@ module.exports.get = function(req,res,next){
 
 
 function getMapping(req, res, done) {
-	var options = {where: []};
+	var options = {where: [{ col:'set_id', val: req.params.setId }, 'and'] };
+	options.where.push('(');
 	req.params.sequenceId.split(',').forEach(function(id) {
 		options.where.push({
 			col: 'sequence_id',
@@ -136,6 +172,7 @@ function getMapping(req, res, done) {
 		options.where.push('or')
 	});
 	if(options.where.length) options.where.pop(); // removing last or
+	options.where.push(')');
 	req.db.getAll(SequenceSoundMapping.ModelInfo, options, function(err, result) {
 		if(err) return res.send(500, err);
 		if(!result.length) return res.send(200, JSON.stringify([]));
@@ -164,7 +201,9 @@ function getSounds(req, res, done) {
 }
 
 
-
+/******************************************************************************
+ * Route set mapping
+ *****************************************************************************/
 
 module.exports.set = function(req,res,next){
 	var form = new formidable.IncomingForm;

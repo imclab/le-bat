@@ -18,8 +18,8 @@ define([
 	}
 
 
-	exports.getMappingsFor = function(ids, callback, scope) {
-		$.get('/admin/mapping/get/'+ids.join(','), function(data) {
+	exports.getMappingsFor = function(setId, ids, callback, scope) {
+		$.get('/admin/mapping/'+setId+'/get/'+ids.join(','), function(data) {
 			callback.call(scope, true, data);
 		},'json')
 		.fail(function(jqXHR, textStatus, errorThrown){
@@ -29,7 +29,7 @@ define([
 	}
 
 
-	exports.editForSequence = function(id, content) {
+	exports.editForSequence = function(setId, id, content) {
 		$sequenceId = $container.find('[name=sequence_id]').val(id);
 		$sequenceContent = $container.find('[name=sequence_content]').val(content);
 		$soundSelect = $container.find('[name=sound_id]');
@@ -44,7 +44,7 @@ define([
 			showResponseInfo(false, errorThrown);
 		})
 		.done(function(){
-			$.get('/admin/mapping/get/'+id, function(data) {
+			$.get('/admin/mapping/'+setId+'/get/'+id, function(data) {
 				if(data.sequenceSoundMappings) 
 					$soundSelect.val(data.sounds[0].id);
 				$soundSelect.removeAttr('disabled');

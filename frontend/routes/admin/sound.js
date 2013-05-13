@@ -156,7 +156,7 @@ function saveSound(req,fields,file,filePath,done){
 
 	var sound = Sound.fromObject({
 		id: null
-		, user_id : 0 // TODO: FILL IN
+		, user_id : req.user.id
 		, name : fields.name
 		, sha1 : file.hash
 		, file_path : filePath
@@ -171,8 +171,6 @@ function saveSound(req,fields,file,filePath,done){
 	req.db.setAll(Sound.ModelInfo, [sound], function(err, result) {
 		if(err) 
 			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
-		
-		sound.id = result.insertId;
 		return done(null,req,fields,sound);
 	});
 }
@@ -202,7 +200,7 @@ function lookupTags(req,fields,sound,done){
 		
 
 		for(var i = 0, length = result.length; i < length; i++){
-			tagSoundMappings.push(new TagSoundMapping(null,result[i].id,sound.id,0)); // create a new mapping
+			tagSoundMappings.push(new TagSoundMapping(null,result[i].id,sound.id,req.user.id)); // create a new mapping
 			delete tags[result[i].name]; // no new tag -> delete it
 		}
 		return done(null,req,sound,tags,tagSoundMappings);

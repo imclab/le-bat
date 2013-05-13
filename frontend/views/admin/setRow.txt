@@ -1,6 +1,0 @@
-tr
-	td 
-		strong #{set.name}
-
-	td
-		button.btn.btn-primary.btn-mini(href='/admin/#{set.id}') Edit

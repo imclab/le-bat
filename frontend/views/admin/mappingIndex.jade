@@ -26,39 +26,24 @@ html
 											li: a(href='/logout') Logout
 
 		div.container-fluid
-			
+
 			div.row-fluid
 				div.span8
-					section#sets
+					section#sequences
 						div.page-header
-							h3 Mapping Sets
+							h3 Some sequences
+						include sequenceTable
 
-						include setTable
+				div.span4
+					section#mapping
+						div.page-header
+							h3 Mapping
+						include mappingForm
+
 				
-				div.span4
-					section#setEdit
-						div.page-header
-							h3 Add new set
-						include setForm
 
+		script(src="/js/libs/jquery/jquery-1.9.1.min.js")
+		script(src="/js/libs/bootstrap/bootstrap.min.js")
+		script(src="/js/libs/bootstrap/jasny-bootstrap.min.js")
 
-		div.container-fluid
-
-			div.row-fluid
-				div.span8
-					section#sounds
-						div.page-header
-							h3 Available sounds
-						include soundTable
-
-				div.span4
-					section#upload
-						div.page-header
-							h3 Upload
-						include upload		
-
-		script(src="js/libs/jquery/jquery-1.9.1.min.js")
-		script(src="js/libs/bootstrap/bootstrap.min.js")
-		script(src="js/libs/bootstrap/jasny-bootstrap.min.js")
-
-		script(src="js/libs/require/require.js", data-main="js/admin/main")
+		script(src="/js/libs/require/require.js", data-main="/js/admin/main")
