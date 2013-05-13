@@ -20,13 +20,23 @@ WebSocketServer.prototype.listen = function(){
 
 	self.server = new wsServer({port : self.port});
 
-	self.server.on('connection',function(client){
+	self.server.on('connection', function(socket){
 		// save the client
-		client._clientId = self.generateId();
-		self.clients[client._clientId] = client;
+		var client = {
+			socket: socket
+			, id : self.generateId()
+			, settings: null
+		}
+		self.clients[client.id] = client;
 
-		client.on('close',function(){
-			delete self.clients[client._clientId];
+		socket.on('message', function(data, flags) {
+			client.settings = JSON.parse(data);
+			self.emit('clientReady', client);
+		});
+
+		socket.on('close',function(){
+			self.emit('clientDone', client);
+			delete self.clients[client.id];
 		});
 	});
 
@@ -38,12 +48,24 @@ WebSocketServer.prototype.generateId = function(){
 	return uuid.v4();
 };
 
+WebSocketServer.prototype.sendMessageToClient = function(message){
+	var self = this;
+	message = typeof message === "string" ? message : JSON.stringify(message);
+	
+	client.socket.send(message,function(err){
+		if(err) {
+			self.emit('error',err);
+		}
+	});
+};
+
+
 WebSocketServer.prototype.broadcast = function(message){
 	var self = this;
 	message = typeof message === "object" ? JSON.stringify(message) : message;
 
 	for(clientId in self.clients){
-		self.clients[clientId].send(message,function(err){
+		self.clients[clientId].socket.send(message,function(err){
 			if(err) self.emit('error',err);
 		});
 	}

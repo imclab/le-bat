@@ -27,7 +27,7 @@ Matcher.prototype.addSequences = function(sequenceObjects) {
 	// Incremental Aho-Corasick needs to be broken up into work packages.
 	var worker = setInterval(function(){
 		for(var i = 0; offset<n && i<self.maxInsertSize; i++, offset++)
-			self._addRawSequence(sequenceObjects[offset].content);
+			self.addSequence(sequenceObjects[offset]);
 		if(offset == n){
 			clearInterval(worker);
 			console.log('complete!')
@@ -37,9 +37,6 @@ Matcher.prototype.addSequences = function(sequenceObjects) {
 		if(offset == n) clearInterval(reporter);
 		else console.log(Math.round(100*offset/n) + '%');
 	}, 3000)
-	//sequenceObjects.forEach(function(element, index) {
-	//	this._addRawSequence(element.content);
-	//}, this);
 }
 
 
@@ -50,6 +47,6 @@ Matcher.prototype.search = function(text) {
 }
 
 
-Matcher.prototype._addRawSequence = function(sequence) {
-	this.trie.add(sequence);
+Matcher.prototype.addSequence = function(sequence) {
+	this.trie.add(sequence.content, sequence);
 }

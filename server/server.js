@@ -5,6 +5,8 @@ var _ = require('underscore')
 ,	WebSocketServer = require('./lib/websocketServer')
 ,	Database = require('./lib/Database')
 ,	Store = require('./lib/sequence/Store')
+,	ClientMapper = require('./lib/ClientMapper')
+
 
 var websocket = new WebSocketServer({port : conf.websocket.port});
 
@@ -16,6 +18,14 @@ websocket.on('error',function(err){
 	console.log('error while broadcasting');
 	console.log(err);
 });
+
+websocket.on('clientReady', function(client) {
+	console.log('Client ready: ', client.id)
+})
+
+websocket.on('clientDone', function(client) {
+	console.log('Client done: ', client.id);
+})
 
 websocket.listen();
 
@@ -32,7 +42,7 @@ tweetStream.on('tweet',function(data){
 	// we need specific coordinates!
 	if(data.coordinates){
 		websocket.broadcast({
-			sound_key : ~~(Math.random()*20)+1 // fine as result fits into 32-bit and will be changed later anyway
+			sequenceSoundIds: [ ~~(Math.random()*20)+1 ]
 			, location : data.coordinates.coordinates
 			, timestamp : new Date(data.created_at).getTime()
 			, tweet : data.id_str
@@ -62,6 +72,29 @@ db.init();
 
 var sequenceStore = new Store();
 tweetStream.on('tweet', function(data) {
-	sequenceStore.parseText(data.text, new Date(data.created_at).getTime());
+	if(sequenceStore.lastDbPull)
+		sequenceStore.parseText(data.text, new Date(data.created_at).getTime());
 })
 sequenceStore.setDb(db);
+
+
+var clientMapper = new ClientMapper(db, sequenceStore, websocket);
+
+tweetStream.on('tweet', function(data) {
+	try{
+		if(db.ready) 
+			clientMapper.processTweet(data);
+	} catch(err) {
+		console.log(err.trace);
+	}
+	
+})
+
+websocket.on('clientReady', function(client) {
+	clientMapper.addClient(client);
+})
+
+websocket.on('clientDone', function(client) {
+	clientMapper.removeClient(client);
+})
+

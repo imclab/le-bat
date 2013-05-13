@@ -13,11 +13,13 @@ module.exports = Trie;
 
 function Trie() {
 	this.root = { count: 0 };
+	this.root.parent = this.root;
 }
 
 
 Trie.prototype.clear = function() {
 	this.root = { count: 0 }; 
+	this.root.parent = this.root;
 }
 
 /*
@@ -105,6 +107,7 @@ Trie.prototype.remove = function(sequence, deleteFn) {
 Trie.prototype.search = function(sequence, gotoFn, failFn) {
 	var currentNode = this.root,
 		result = [];
+	if(!sequence) return;
 	sequence = sequence.toLowerCase();
 	for(var i = 0, n = sequence.length; i < n; ++i) {
 		var character = sequence.charAt(i);
