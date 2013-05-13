@@ -3,4 +3,9 @@ tr
 		strong #{set.name}
 
 	td
-		a.btn.btn-primary.btn-mini(href='/admin/mapping/') Edit
+		- var updatedDateString = new Date(set.updated).toDateString();
+		| #{updatedDateString}
+	td
+		| #{users[set.user_id].name}
+	td.rowLink.hide
+		a(href="/listen/#{set.id}")

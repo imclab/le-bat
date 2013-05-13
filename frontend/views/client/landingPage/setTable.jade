@@ -4,7 +4,9 @@
 		thead
 			tr
 				th Name
-		tbody
+				th Last update
+				th Creator
+		tbody(data-provides="rowlink")
 			for set in sets
 				include setRow
 - else
