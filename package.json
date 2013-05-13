@@ -3,7 +3,7 @@
 	, "private": true
 	, "author": "fde31 & fixed"
 	, "version" : "0.1.0"
-	, "dbSchemaVersion": "8"
+	, "dbSchemaVersion": "9"
 	, "contributors": [
 			{
 				"name": "Florian Demmer"

@@ -48,9 +48,6 @@ module.exports.register = function(req,res,next) {
 function validate(req,res,fields,next) {
 	if(!fields.username) return res.send(400, 'Username required');
 	if(!fields.password) return res.send(400, 'Password required');
-	if(!fields.gender) return res.send(400, 'Gender required');
-	if(!fields.age) return res.send(400, 'Age required');
-	if(isNaN(fields.age)) return res.send(400, 'Age must be a number');
 	req.db.getAll(User.ModelInfo, { where: [{ col: 'name', val: fields.username }] }, function(err, result) {
 		if(err) return next(err);
 		if(result.length) return res.send(400, 'Username already exists.');
@@ -63,11 +60,10 @@ function saveUser(req,res,fields,next) {
 	var hashedPassword = Auth.hashPassword(fields.password, salt);
 	var user = User.fromObject({
 		id: null,
+		auth_type: 'local',
 		name: fields.username,
 		pass: hashedPassword,
 		salt: salt,
-		gender: fields.gender,
-		age: fields.age,
 		created: Date.now()
 	});
 
