@@ -1,0 +1,56 @@
+!!! 5
+html
+	head
+		title Login &#x266b; #{settings.sitename}
+		link(rel='stylesheet', href='css/theme.min.css')
+	body
+		div#page-alert.page-alert
+			- if(messages)
+				for message in messages
+					.alert.alert-error
+						| #{message}
+
+
+		div.container-fluid
+
+			div.row-fluid
+				div.span6
+					section#login
+						.page-header
+							h2 Login
+						form#login_form(action="/login", method="post")
+							label(for='username') Username
+							input(type='text', name='username', placeholder='your username')
+
+							label(for='password') Password
+							input(type='password', name='password')
+
+							.form-actions
+								input.submit.btn.btn-primary(type='submit', value='Login')
+
+				div.span6
+					section#register
+						.page-header
+							h2 Register
+						form#register_form(action="/register", method="post", enctype="multipart/form-data")
+							label(for='username') Username
+							input(type='text', name='username', placeholder='your username')
+
+							label(for='password') Password
+							input(type='password', name='password')
+
+							label(for='gender') Gender
+							input(type='text', name='gender')
+
+							label(for='age') Age
+							input(type='text', name='age')
+
+							.form-actions
+								input.submit.btn.btn-primary(type='submit', value='Register')
+
+
+				
+
+		script(src="js/libs/jquery/jquery-1.9.1.min.js")
+		script(src="js/libs/bootstrap/bootstrap.min.js")
+		script(src="js/libs/bootstrap/jasny-bootstrap.min.js")

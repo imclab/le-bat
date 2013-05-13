@@ -3,7 +3,7 @@
 	, "private": true
 	, "author": "fde31 & fixed"
 	, "version" : "0.1.0"
-	, "dbSchemaVersion": "6"
+	, "dbSchemaVersion": "7"
 	, "contributors": [
 			{
 				"name": "Florian Demmer"
@@ -32,6 +32,8 @@
 		, "recess": "1.1.6"
 		, "jade": "0.29.0"
 		, "uuid" : "1.4.1"
+		, "passport" : "0.1.16"
+		, "passport-local" : "0.1.6"
 	}
 	, "devDependencies": {
 		"vows": "0.7.x"

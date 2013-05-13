@@ -4,6 +4,7 @@ var _ = require('underscore')
 ,	Database = require('../server/lib/Database')
 ,	http = require('http')
 ,	express = require('express')
+,	Auth = require('./auth')
 ,	Routes = require('./routes/index');
 
 
@@ -29,6 +30,11 @@ app.configure(function(){
 
 	app.use(express.json());
 	app.use(express.urlencoded());
+	app.use(express.cookieParser());
+	app.use(express.session({ secret: pjson.name + Date.now() }));
+	app.use(express.methodOverride());
+
+	new Auth(app, db);
 
 	app.set('sitename', pjson.name);
 	app.set('pagetitle', '');
@@ -38,6 +44,8 @@ app.configure(function(){
 			websocket: conf.websocket
 			, host: req.host
 		};
+		if(!res.locals.user)
+			res.locals.user = req.user;	
 		next();
 	})
 

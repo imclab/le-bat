@@ -1,4 +1,4 @@
--- Generation Time: May 12, 2013 at 06:17 PM
+-- Generation Time: May 13, 2013 at 09:29 PM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -104,12 +104,14 @@ CREATE TABLE IF NOT EXISTS `tag_sound` (
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(60) NOT NULL,
+  `pass` char(128) CHARACTER SET ascii NOT NULL COMMENT 'sha512',
+  `salt` bigint(20) unsigned NOT NULL,
   `gender` tinyint(3) unsigned NOT NULL COMMENT 'enums are bad',
   `age` tinyint(3) unsigned NOT NULL,
   `created` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -122,4 +124,3 @@ CREATE TABLE IF NOT EXISTS `var` (
   `value` text NOT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-

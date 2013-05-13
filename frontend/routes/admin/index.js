@@ -1,10 +1,33 @@
 var main = require('./main')
 ,	sound = require('./sound')
 ,	mapping = require('./mapping')
+,	login = require('./login')
 
 module.exports.init = function(app){
 
+	app.settings.auth.setFailureRedirect('/login');
+
+	app.get('/login'
+		, login.index
+	);
+
+	app.post('/register'
+		, login.register
+	);
+
+	app.post('/login'
+		, app.settings.auth.authenticate()
+		, function(req, res) { res.redirect('/admin'); }
+	);
+
+	app.get('/logout', function(req, res){
+		res.locals.user = null;
+		req.logout();
+		res.redirect('/');
+	});
+
 	app.get('/admin'
+		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
 		, main.index
 	);
 
@@ -17,6 +40,7 @@ module.exports.init = function(app){
 	);
 
 	app.post('/admin/sound/upload'
+		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
 		, sound.upload
 	);
 
@@ -25,6 +49,7 @@ module.exports.init = function(app){
 	);
 
 	app.post('/admin/mapping/set'
+		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
 		, mapping.set
 	);
 }
