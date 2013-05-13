@@ -10,6 +10,8 @@ var formidable = require('formidable')
 module.exports.index = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
+	
+	res.locals.clientSettings.setId = req.params.setId;
 
 	async.waterfall([
 			function(done){
@@ -258,7 +260,13 @@ function validateSound(req,res,fields,done){
 
 
 function checkForExistingMapping(req,res,fields,done){
-	var options = { where: [{ col: 'sequence_id', val: res.locals.sequence[0].id }, 'and', { col: 'sound_id', val: res.locals.sound[0].id }] };
+	var options = { where: [
+		{ col: 'sequence_id', val: res.locals.sequence[0].id }, 
+		'and', 
+		{ col: 'sound_id', val: res.locals.sound[0].id },
+		'and', 
+		{ col: 'set_id', val: req.params.setId }
+	] };
 	req.db.getAll(SequenceSoundMapping.ModelInfo, options, function(err, result) {
 		if(err) return res.send(500, err);
 		if(result.length) return res.send(412, 'Mapping already exists.')
@@ -272,7 +280,7 @@ function saveMapping(req,res,fields,done){
 		id: null,
 		sequence_id: res.locals.sequence[0].id,
 		sound_id: res.locals.sound[0].id,
-		set_id: 0 // TODO: fill in
+		set_id: req.params.setId
 	})
 	req.db.setAll(SequenceSoundMapping.ModelInfo, [mapping], function(err,result){
 		if(err) return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});

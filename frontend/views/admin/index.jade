@@ -3,7 +3,11 @@ html
 	head
 		title Admin &#x266b; #{settings.sitename}
 		link(rel='stylesheet', href='/css/theme.min.css')
-
+		| <script type='text/javascript'>
+		- var settingsJson = JSON.stringify(clientSettings)
+		| settings = !{settingsJson}
+		| </script>
+		
 	body.has-static-navbar
 		div#page-alert.page-alert
 

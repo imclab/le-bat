@@ -12,13 +12,15 @@ define([
 	var $progressBar = $container.find('.bar');
 	var $progressBarContainer = $container.find('.progressBarContainer');
 
+	var setId = settings.setId;
+	
 	function showResponseInfo(success, message){
 		page.showPageAlert(message, success ? 'success' : 'error');
 		$progressBarContainer.hide();
 	}
 
 
-	exports.getMappingsFor = function(setId, ids, callback, scope) {
+	exports.getMappingsFor = function(ids, callback, scope) {
 		$.get('/admin/mapping/'+setId+'/get/'+ids.join(','), function(data) {
 			callback.call(scope, true, data);
 		},'json')
@@ -29,7 +31,7 @@ define([
 	}
 
 
-	exports.editForSequence = function(setId, id, content) {
+	exports.editForSequence = function(id, content) {
 		$sequenceId = $container.find('[name=sequence_id]').val(id);
 		$sequenceContent = $container.find('[name=sequence_content]').val(content);
 		$soundSelect = $container.find('[name=sound_id]');
