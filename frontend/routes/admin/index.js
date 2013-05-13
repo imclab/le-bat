@@ -31,6 +31,7 @@ module.exports.init = function(app){
 		, main.index
 	);
 
+
 	app.get('/admin/sound/get/:soundId'
 		, sound.get
 	);
@@ -44,11 +45,21 @@ module.exports.init = function(app){
 		, sound.upload
 	);
 
-	app.get('/admin/mapping/get/:sequenceId'
+	app.post('/admin/mapping'
+		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
+		, mapping.editSet
+	);
+
+	app.get('/admin/mapping/:setId'
+		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
+		, mapping.index
+	);
+
+	app.get('/admin/mapping/:setId/get/:sequenceId'
 		, mapping.get
 	);
 
-	app.post('/admin/mapping/set'
+	app.post('/admin/mapping/:setId/set'
 		, function(req,res,next) {app.settings.auth.ensure(req,res,next);} 
 		, mapping.set
 	);

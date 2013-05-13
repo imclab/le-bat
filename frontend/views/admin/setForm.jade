@@ -1,0 +1,8 @@
+form#login_form(action="/admin/mapping", method="post", enctype="multipart/form-data")
+	input(type='hidden', name='id')
+
+	label(for='name') Name
+	input(type='text', name='name', placeholder='name')
+
+	.form-actions
+		input.submit.btn.btn-primary(type='submit', value='Save')

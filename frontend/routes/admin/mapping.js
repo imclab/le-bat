@@ -3,7 +3,102 @@ var formidable = require('formidable')
 ,	_ = require('underscore')
 ,	Sequence = require('../../../model/Sequence')
 ,	Sound = require('../../../model/Sound')
-,	SequenceSoundMapping = require('../../../model/SequenceSoundMapping');
+,	SequenceSoundMapping = require('../../../model/SequenceSoundMapping')
+,	SequenceSoundSet = require('../../../model/SequenceSoundSet');
+
+
+module.exports.index = function(req, res, next) {
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	async.waterfall([
+			function(done){
+				return done(null, req, res)
+			}
+		], function(err, req, res){
+			if(err){
+				console.log(err.error);
+				res.send(err.httpCode, err.message);
+			} else{
+				return res.send(200, JSON.stringify({
+				}));
+			}
+		});
+}
+
+
+module.exports.editSet = function(req, res, next) {
+	if(!req.db || !req.db.ready) 
+		return res.send(500, 'Database not available');
+
+	var form = new formidable.IncomingForm;
+
+	form.parse(req,function(err,fields) {
+		if(err){
+			console.log(err);
+			return res.send('An error occured while transmitting the form.');
+		}
+
+		async.waterfall([
+			function(next){
+				return next(null, req, res, fields)
+			}
+			, validateSet
+			, saveSet
+		], function(err, req, res){
+			if(err){
+				console.log(err.error);
+				res.send(err.httpCode, err.message);
+			} else{
+				return res.send(200, JSON.stringify({
+					sets: res.locals.sets
+				}));
+			}
+		});
+	});
+}
+
+
+function validateSet(req,res,fields,next) {
+	if(!fields.name) return res.send(400, 'Missing field: name');
+
+	var options = { where: [
+		{ col: 'id', val:fields.id }, 'and', { col:'user_id', val: req.user.id }, 'and', {col: 'name', val: fields.name }
+	] };
+
+	req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		if(result.length) return res.send(412, 'A set with that name already exists.');
+		if(fields.id) {	
+			options.pop();
+			options.pop();
+			req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
+				if(err) return res.send(500, err);
+				if(!result.length) return res.send(412, 'You can\'t sets that are not existing or don\'t belong to you.');
+				result[0].updated = Date.now();
+				res.locals.sets = result;
+				next(null, req, res, fields);
+			});
+		} else next(null, req, res, fields);
+	});
+}
+
+function saveSet(req,res,fields,next) {
+	if(!res.locals.sets) {
+		res.locals.sets = [SequenceSoundSet.fromObject({
+			id: null,
+			user_id: req.user.id,
+			name: fields.name,
+			created: Date.now(),
+			updated: Date.now()
+		})];
+	}
+	req.db.setAll(SequenceSoundSet.ModelInfo, res.locals.sets, function(err, result) {
+		if(err) return next({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
+		return next(null, req, res);
+	})
+}
+
 
 
 

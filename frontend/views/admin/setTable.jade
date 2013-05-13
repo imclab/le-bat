@@ -1,0 +1,13 @@
+- if (sets.length > 0)
+
+	table#setTable.table.table-striped
+		thead
+			tr
+				th Name
+		tbody
+			for set in sets
+				include setRow
+- else
+
+	p
+		| You have no mapping sets, yet. Create one on the right-hand side and start mapping!

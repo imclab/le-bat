@@ -2,6 +2,7 @@ var fs = require('fs')
 ,	async = require('async')
 ,	Sequence = require('../../../model/Sequence')
 ,	Sound = require('../../../model/Sound')
+,	SequenceSoundSet = require('../../../model/SequenceSoundSet')
 ,	Tag = require('../../../model/Tag')
 ,	TagSoundMapping = require('../../../model/TagSoundMapping');
 
@@ -14,6 +15,7 @@ module.exports.index = function(req,res,next){
 			function(done){
 				return done(null, req, res)
 			}
+			, getSequenceSoundSets
 			, getSequences
 			, getSounds
 		],function(err){
@@ -26,6 +28,14 @@ module.exports.index = function(req,res,next){
 		});
 };
 
+function getSequenceSoundSets(req, res, done) {
+
+	req.db.getAll(SequenceSoundSet.ModelInfo, { where: [{ col: 'user_id', val: req.user.id }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sets = result;
+		done(null, req, res);
+	})
+}
 
 function getSequences(req, res, done) {
 	var options = {
