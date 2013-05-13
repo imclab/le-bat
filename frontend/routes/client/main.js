@@ -13,7 +13,6 @@ module.exports.index = function(req,res,next){
 		, getSets
 		, populateSetsWithNames
 	], function(err){
-		res.locals.pagetitle = 'Le social sound';
 		res.render('landing/landing');
 	});
 };
