@@ -107,7 +107,7 @@ Trie.prototype.remove = function(sequence, deleteFn) {
 Trie.prototype.search = function(sequence, gotoFn, failFn) {
 	var currentNode = this.root,
 		result = [];
-	if(!sequence) return;
+	if(!sequence) return result;
 	sequence = sequence.toLowerCase();
 	for(var i = 0, n = sequence.length; i < n; ++i) {
 		var character = sequence.charAt(i);

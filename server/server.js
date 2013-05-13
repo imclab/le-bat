@@ -38,7 +38,7 @@ var tweetStream = new TwitterStream({
 });
 
 tweetStream.on('tweet',function(data){
-	
+	/*
 	// we need specific coordinates!
 	if(data.coordinates){
 		websocket.broadcast({
@@ -48,6 +48,7 @@ tweetStream.on('tweet',function(data){
 			, tweet : data.id_str
 		});
 	}
+	*/
 });
 
 tweetStream.on('error',function(err){
@@ -82,10 +83,10 @@ var clientMapper = new ClientMapper(db, sequenceStore, websocket);
 
 tweetStream.on('tweet', function(data) {
 	try{
-		if(db.ready) 
+		if(sequenceStore.lastDbPull && data.coordinates) 
 			clientMapper.processTweet(data);
 	} catch(err) {
-		console.log(err.trace);
+		console.log(err.stack);
 	}
 	
 })

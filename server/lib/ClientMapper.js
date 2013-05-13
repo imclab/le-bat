@@ -60,12 +60,19 @@ ClientMapper.prototype.processTweet = function(tweet) {
 	})
 
 	this.connectedSets.forEach(function(connectedSet) {
-		var mappingIdsToSend = [];
+		var sequenceSoundIdsToSend = [];
 		sequences.forEach(function(sequence) {
 			if(connectedSet.mappingsBySequenceId[sequence.id])
-				mappingIdsToSend.push(connectedSet.mappingsBySequenceId[sequence.id].id);
+				sequenceSoundIdsToSend.push(connectedSet.mappingsBySequenceId[sequence.id].id);
 		});
-		if(!mappingIdsToSend.length) return
-		console.log('Found mappingIds for client', mappingIdsToSend);
-	})
+		if(!sequenceSoundIdsToSend.length) return;
+
+		this.wss.sendMessageToClient(connectedSet.client, {
+			sequenceSoundIds: sequenceSoundIdsToSend
+			, location : tweet.coordinates.coordinates
+			, timestamp : new Date(tweet.created_at).getTime()
+			, tweet : tweet.id_str
+		});
+
+	}, this)
 }

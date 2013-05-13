@@ -48,7 +48,7 @@ WebSocketServer.prototype.generateId = function(){
 	return uuid.v4();
 };
 
-WebSocketServer.prototype.sendMessageToClient = function(message){
+WebSocketServer.prototype.sendMessageToClient = function(client, message){
 	var self = this;
 	message = typeof message === "string" ? message : JSON.stringify(message);
 	

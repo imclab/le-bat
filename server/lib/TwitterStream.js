@@ -25,7 +25,7 @@ function TwitterStream(options){
 	}
 	this.url += params.join('&');
 
-	console.log(this.url);
+	console.log('Connecting to', this.url);
 
 	this.accessToken = options.accessToken;
 	this.accessSecret = options.accessSecret;
