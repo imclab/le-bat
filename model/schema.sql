@@ -1,21 +1,6 @@
--- Generation Time: May 13, 2013 at 09:29 PM
+-- Generation Time: May 13, 2013 at 11:05 AM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile`
---
-
-CREATE TABLE IF NOT EXISTS `profile` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `name` varchar(60) NOT NULL,
-  `created` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -43,11 +28,27 @@ CREATE TABLE IF NOT EXISTS `sequence_sound` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sequence_id` int(10) unsigned NOT NULL,
   `sound_id` int(10) unsigned NOT NULL,
-  `profile_id` int(10) unsigned NOT NULL,
+  `set_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sequence_id` (`sequence_id`),
-  KEY `profile_id` (`profile_id`)
+  KEY `set_id` (`set_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Associates character sequences with sounds.' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sequence_sound_set`
+--
+
+CREATE TABLE IF NOT EXISTS `sequence_sound_set` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `created` bigint(20) unsigned NOT NULL,
+  `updated` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
