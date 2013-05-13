@@ -77,7 +77,7 @@ theme-css: ${THEME_TARGET_DIR}/css/*.css
 ${THEME_TARGET_DIR}/css/*.css: ${BOOTSTRAP_SOURCE_DIR}/less/*.less ${THEME_LESS_SOURCE_DIR}/*.less
 	mkdir -p ${THEME_TARGET_DIR}/css
 	${NODE_BIN_DIR}/recess --compile ${THEME_LESS} > ${THEME_TARGET_DIR}/css/theme.css
-	${NODE_BIN_DIR}/recess --compress ${THEME_LESS} ${JASNY_BOOTSTRAP_LESS} ${BOOTSTRAP_LESS} > ${THEME_TARGET_DIR}/css/theme.min.css
+	${NODE_BIN_DIR}/recess --compress ${THEME_LESS} > ${THEME_TARGET_DIR}/css/theme.min.css
 	# Should add theme-responsive.less?
 	${NODE_BIN_DIR}/recess --compile ${JASNY_BOOTSTRAP_RESPONSIVE_LESS} ${BOOTSTRAP_RESPONSIVE_LESS} > ${THEME_TARGET_DIR}/css/theme-responsive.css
 	${NODE_BIN_DIR}/recess --compress ${JASNY_BOOTSTRAP_RESPONSIVE_LESS} ${BOOTSTRAP_RESPONSIVE_LESS} > ${THEME_TARGET_DIR}/css/theme-responsive.min.css

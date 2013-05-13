@@ -3,14 +3,36 @@ html
 	head
 		title Admin &#x266b; #{settings.sitename}
 		link(rel='stylesheet', href='css/theme.min.css')
-	body
+
+	body.has-static-navbar
 		div#page-alert.page-alert
 
 		div.container-fluid
 			div.row-fluid
-				div.span4.pull-right
-					strong #{user.name}
-					a(href='/logout') Logout
+				.navbar.navbar-fixed-top
+					.navbar-inner
+						div.container-fluid
+							div.row-fluid
+								a.brand(href='/') &#x266b; #{settings.sitename}
+								ul.nav
+									li: a(href='/') Home
+									li.active: a(href='/admin') Editor
+								ul.nav.pull-right
+									li.dropdown
+										a.dropdown-toggle(href='#', data-toggle='dropdown') 
+											| #{user.name} &nbsp;
+											b.caret
+										ul.dropdown-menu
+											li: a(href='/logout') Logout
+
+		div.container-fluid
+			
+			div.row-fluid
+				div.span8
+					section#sets
+						div.page-header
+							h3 Mapping Sets
+						
 
 		div.container-fluid
 
