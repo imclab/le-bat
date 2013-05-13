@@ -7,7 +7,9 @@ html
 		- var settingsJson = JSON.stringify(clientSettings)
 		| settings = !{settingsJson}
 		| </script>
-	body.has-static-navbar(data-spy="scroll", data-target=".navbar")
+
+	body.has-static-navbar(data-spy="scroll", data-target=".navbar", data-offset="100")
+
 		//- fixed top navigation
 		.navbar.navbar-fixed-top
 			include landingPage/navbar
@@ -21,19 +23,19 @@ html
 
 			section#components
 				include landingPage/components
-			hr
+			
 			section#select-set
 				include landingPage/selectSet
-			hr
+			
 			section#motivation
 				include landingPage/motivation
-			hr
+			
 			section#technology
 				include landingPage/technology
-			hr
+			
 			section#forecast
 				include landingPage/forecast
-			hr
+			
 			section#build-with
 				include landingPage/buildWith
 
