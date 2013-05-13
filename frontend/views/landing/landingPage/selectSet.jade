@@ -1,20 +1,21 @@
 .text-center
 	h1.page-header
-		| Quit the japping and show me!
+		| Wanna try it out?
 .row-fluid
-	.span9
+	.span8
 		h3.page-header
+			i.iconic-clock
 			| Most recent associations
 		.row-fluid
 			.span12
 				include setTable
-	.span3
+	.span4
 		h3.page-header
-			| Create your own
+			i.iconic-brush
+			| Create your own
 		p
 			| You want to create your own set of mappings, upload sounds and share
 			| your mappings with others?
-		p
-			| open the editor and get started
-		a.btn.btn-large(href="/admin")
-			| editor
+
+		a.btn.btn-large.btn-primary(href="/admin")
+			| Open the editor!
