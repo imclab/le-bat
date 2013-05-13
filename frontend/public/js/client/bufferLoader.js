@@ -4,17 +4,22 @@ define([
 	'utils'
 ], function(App,EventEmitter,Utils){
 
-	function BufferLoader(urls,context){
+	function BufferLoader(sequenceSoundSet,context){
 		
 		EventEmitter.call(this);
 		
 		this.context = context;
-		this.urlList = urls;
+
+		this.urlList = {};
+		sequenceSoundSet.sounds.forEach(function(sound) {
+			this.urlList[sound.id] = sound.file_path;
+		}, this);
+
 		this.amountOfUrls = Object.keys(this.urlList).length;
 		this.loadCount = 0;
 		this.bufferList = {};
 
-		this.loadBuffer = function(url,soundKey){
+		this.loadBuffer = function(url,soundId){
 			var request = new XMLHttpRequest();
 			request.open('GET',url,true);
 			request.responseType = 'arraybuffer';
@@ -28,7 +33,7 @@ define([
 							self.emit('error','Could not decode audio file: ' + url);
 							return;
 						}
-						self.bufferList[soundKey] = buffer;
+						self.bufferList[soundId] = buffer;
 						if(++self.loadCount == self.amountOfUrls){
 							self.emit('ready',self.bufferList);
 						} else{
@@ -49,8 +54,8 @@ define([
 		};
 
 		this.load = function(){
-			for(var soundKey in this.urlList){
-				this.loadBuffer(this.urlList[soundKey],soundKey);
+			for(var soundId in this.urlList){
+				this.loadBuffer(this.urlList[soundId],soundId);
 			}
 		};
 	}

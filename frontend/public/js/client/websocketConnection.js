@@ -31,12 +31,16 @@ define([
 			this.socket.onmessage = function(msg){
 				try{
 					var json = JSON.parse(msg.data);
-					self.emit('data',json);
 				} catch(e){
-					console.error('error while parsing incoming message');
+					console.error('error while parsing incoming message', e);
 				}
+				self.emit('data',json);
 			};
 		};
+
+		this.send = function(data) {
+			this.socket.send(JSON.stringify(data));
+		}
 	}
 
 	// inherit from EventEmitter

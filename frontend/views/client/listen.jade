@@ -2,18 +2,22 @@
 html
 	head
 		title Client Page
-		link(rel='stylesheet', href='css/theme.min.css')
+		link(rel='stylesheet', href='/css/theme.min.css')
 		| <script type='text/javascript'>
 		- var settingsJson = JSON.stringify(clientSettings)
-		- var mappingsJson = JSON.stringify(mappings)
 		| settings = !{settingsJson}
-		| mappings = !{mappingsJson}
 		| </script>
+
 	body
 		div.clientContent
 			div
+				.span12#title
+					h2.text-center Listening to "#{sequenceSoundSet.name}" by #{author.name}
+
 				div.span6.centered#progress_container
 					include progress
+
 				div.span6.centered.hide.volumeSlider
 					include volume
-		script(src="js/libs/require/require.js", data-main="js/client/main")
+
+		script(src="/js/libs/require/require.js", data-main="/js/client/main")

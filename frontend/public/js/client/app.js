@@ -12,6 +12,11 @@ define([
 	var progressBar, volumeSlider;
 	var timerOffset = 5000, timerOffsetInterval, timerCountdown = 0;
 
+	var sequenceSoundMappingsById = {};
+	settings.sequenceSoundSet.mappings.forEach(function(mapping) {
+		sequenceSoundMappingsById[mapping.id] = mapping;
+	});
+
 	function init(){
 		var isCompatible = testBrowserCompability();
 
@@ -48,7 +53,7 @@ define([
 		});
 		
 		audioContext = window.webkitAudioContext ? new webkitAudioContext() : new AudioContext();
-		var bufferLoader = new BufferLoader(mappings,audioContext);
+		var bufferLoader = new BufferLoader(settings.sequenceSoundSet, audioContext);
 
 		bufferLoader.on('ready',function(buffers){
 			console.log('successfully loaded and decoded buffers!')
@@ -69,6 +74,8 @@ define([
 	
 		websocket.on('connected',function(){
 			console.log('websocket connected successfully');
+			
+			websocket.send({sequenceSoundSet: settings.sequenceSoundSet.set.id });
 
 			timerOffsetInterval = setInterval(function(){
 
@@ -86,11 +93,21 @@ define([
 		});
 
 		websocket.on('data',function(data){
-			var temp = locator.geoPositionToCartesian(data.location[0],data.location[1]);
-			data.x = temp.x;
-			data.y = temp.y
-			data.z = temp.z;
-			soundFactory.playSound(data);
+			var delay = 0;
+			data.sequenceSoundIds.forEach(function(id) {
+				if(sequenceSoundMappingsById[id]) {
+					var temp = locator.geoPositionToCartesian(data.location[0],data.location[1]);
+					var playConfig = {
+						soundId: sequenceSoundMappingsById[id].sound_id
+						, x: temp.x
+						, y: temp.y
+						, z: temp.z
+						, timestamp: data.timestamp + ~~(Math.random() * 1000) // Our data currently gives full seconds
+					}
+					soundFactory.playSound(playConfig, delay);
+					delay += 500;
+				}
+			});
 		});
 
 		websocket.on('close',function(){

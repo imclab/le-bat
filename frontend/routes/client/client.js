@@ -1,27 +1,83 @@
-var Sound = require('../../../model/Sound')
+var async = require('async')
+	, Sound = require('../../../model/Sound')
+	, SequenceSoundSet = require('../../../model/SequenceSoundSet')
+	, SequenceSoundMapping = require('../../../model/SequenceSoundMapping')
+	, User = require('../../../model/User')
 
-module.exports.index = function(req,res,next){
+
+module.exports.listenTo = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 
-	// Use a hardcoded set of mappings and sounds for current
-	// phase of development. This definitely has to be
-	// replaced later!
-
-	req.db.getAll(Sound.ModelInfo,null,function(err,result){
-		if(err)
-			return res.send(500, 'Internal Server Error');
-		
-		if(result.length){
-			var mappings = {};
-			var length = result.length < 8 ? result.length : 8;
-			for(var i = 1; i < length; i++){
-				mappings[i] = result[i].file_path;
+	async.waterfall([
+			function(done){
+				return done(null, req, res)
 			}
-			res.locals.mappings = mappings;
-			return res.render('client/listen');
-		} else{
-			return res.send(400, 'No sounds present! Please upload some!');
-		}
-	})
+			, getSet
+			, getAuthor
+			, getMappings
+			, getSounds
+		],function(err, req, res){
+			if(err){
+				console.log(err.error);
+				res.send(err.httpCode, err.message);
+			} else{
+				res.locals.clientSettings.sequenceSoundSet = {
+					set: res.locals.sequenceSoundSet
+					, author: res.locals.author
+					, mappings: res.locals.sequenceSoundMappings
+					, sounds: res.locals.sounds
+				};
+				return res.render('client/listen');
+			}
+		});
 };
+
+
+function getSet(req, res, done) {
+	req.db.getAll(SequenceSoundSet.ModelInfo, { where: [{ col:'id', val: req.params.setId }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		if(!result.length) return done({error: 'set not found', httpCode:404, message: 'Set not found.'});
+		res.locals.sequenceSoundSet = result[0];
+		done(null, req, res);
+	})
+}
+
+
+function getAuthor(req, res, done) {
+	req.db.getAll(User.ModelInfo, { where: [{ col:'id', val: res.locals.sequenceSoundSet.user_id }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		if(!result.length) return done({error: 'author of set not found', httpCode:404, message: 'Author of set not found.'});
+		res.locals.author = result[0];
+		done(null, req, res);
+	})
+}
+
+
+function getMappings(req, res, done) {
+	req.db.getAll(SequenceSoundMapping.ModelInfo, { where: [{ col:'set_id', val: req.params.setId }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		if(!result.length) return res.send(200, JSON.stringify([]));
+		res.locals.sequenceSoundMappings = result;
+		done(null, req, res);
+	})
+}
+
+
+function getSounds(req, res, done) {
+	var options = { where: [] };
+	res.locals.sequenceSoundMappings.forEach(function(mapping) {
+		options.where.push({
+			col: 'id',
+			val: mapping.sound_id
+		});
+		options.where.push('or');
+	});
+	if(options.where.length) options.where.pop(); // removing last or
+
+	req.db.getAll(Sound.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sounds = result;
+		done(null, req, res);
+	})
+}

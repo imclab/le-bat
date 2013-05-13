@@ -24,29 +24,25 @@ define([
 
 		this.samples = {};
 
-		for(var soundKey in buffers){
-			this.samples[soundKey] = new SampleController(buffers[soundKey],this.mix,this.context);
+		for(var soundId in buffers){
+			this.samples[soundId] = new SampleController(buffers[soundId],this.mix,this.context);
 		}
 	}
 
-	SoundFactory.prototype.playSound = function(data){
+	SoundFactory.prototype.playSound = function(data, delay){
 
-		var scheduleTime = this._addRandomMilliseconds(data.timestamp);
+		var scheduleTime = data.timestamp + delay;
 		scheduleTime = scheduleTime - (+new Date) + this.scheduleOffset;
 		scheduleTime = scheduleTime / 1000; // to seconds for audio scheduling
 
-		if(this.samples[data.sound_key]){
-			var played = this.samples[data.sound_key].play(data.x,data.y,data.z,scheduleTime);
-			if(!played) console.log('dropped sound for key: ' + data.sound_key);
+		if(this.samples[data.soundId]){
+			var played = this.samples[data.soundId].play(data.x,data.y,data.z,scheduleTime);
+			if(!played) console.log('dropped sound for key: ' + data.soundId);
 		}
 	};
 
 	SoundFactory.prototype.setVolume = function(val){
 		this.mix.gain.value = val;
-	};
-
-	SoundFactory.prototype._addRandomMilliseconds = function(seconds){
-		return seconds + ~~(Math.random() * 1000);
 	};
 
 	return SoundFactory;

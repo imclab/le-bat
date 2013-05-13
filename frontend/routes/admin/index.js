@@ -56,7 +56,7 @@ module.exports.init = function(app){
 	);
 
 	app.get('/admin/mapping/:setId/get/:sequenceId'
-		, mapping.get
+		, mapping.getForSequences
 	);
 
 	app.post('/admin/mapping/:setId/set'

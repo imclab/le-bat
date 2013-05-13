@@ -139,7 +139,7 @@ function saveSet(req,res,fields,next) {
  * Route get
  *****************************************************************************/
 
-module.exports.get = function(req,res,next){
+module.exports.getForSequences = function(req,res,next){
 	if(!req.db || !req.db.ready) 
 		return res.send(500, 'Database not available');
 

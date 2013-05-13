@@ -7,7 +7,7 @@ module.exports.init = function(app){
 		, main.index
 	);
 
-	app.get('/listen'
-		, client.index
+	app.get('/listen/:setId'
+		, client.listenTo
 	);
 };
