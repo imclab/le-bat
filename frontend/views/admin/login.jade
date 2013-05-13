@@ -12,42 +12,55 @@ html
 
 
 		div.container-fluid
-
 			div.row-fluid
-				div.span6
-					section#login
-						.page-header
-							h2 Login
-						form#login_form(action="/login", method="post")
-							label(for='username') Username
-							input(type='text', name='username', placeholder='your username')
 
-							label(for='password') Password
-							input(type='password', name='password')
+				.span4.offset4
 
-							.form-actions
-								input.submit.btn.btn-primary(type='submit', value='Login')
+					.tab-content
 
-				div.span6
-					section#register
-						.page-header
-							h2 Register
-						form#register_form(action="/register", method="post", enctype="multipart/form-data")
-							label(for='username') Username
-							input(type='text', name='username', placeholder='your username')
+						.tab-pane.active#login
+							.page-header
+								h2 Login
 
-							label(for='password') Password
-							input(type='password', name='password')
+							form#login_form(action="/login", method="post")
+								label(for='username') Username
+								input.input-block-level(type='text', name='username', placeholder='Your username')
 
-							label(for='password_confirm') Confirm Password
-							input(type='password', name='password_confirm')
+								label(for='password') Password
+								input.input-block-level(type='password', name='password', placeholder='Your password')
 
-							.form-actions
-								input.submit.btn.btn-primary(type='submit', value='Register')
+								p: div
+									| Don't have an account? 
+									a(href="#register", data-toggle="tab") Register
 
+								.form-actions
+									input.submit.btn.btn-primary(type='submit', value='Login')
 
-				
+						.tab-pane#register
+							.page-header
+								h2 Register
+
+							form#register_form(action="/register", method="post", enctype="multipart/form-data")
+								label(for='username') Username
+								input.input-block-level(type='text', name='username', placeholder='Your username')
+
+								label(for='password') Password
+								input.input-block-level(type='password', name='password', placeholder='Your password')
+
+								label(for='password_confirm') Confirm Password
+								input.input-block-level(type='password', name='password_confirm', placeholder='Type it in a second time')
+
+								p
+									div: a(href="#login", data-toggle="tab") Back to login
+
+								.form-actions
+									input.submit.btn.btn-primary(type='submit', value='Register')
 
 		script(src="js/libs/jquery/jquery-1.9.1.min.js")
 		script(src="js/libs/bootstrap/bootstrap.min.js")
 		script(src="js/libs/bootstrap/jasny-bootstrap.min.js")
+
+		script
+			$(function() {
+				$('#forms a:first').tab('show');
+			})
