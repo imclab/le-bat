@@ -17,15 +17,20 @@ html
 			include landingPage/header
 
 		//- the content container
-		.container
-			section#overview
-				include landingPage/overview
-			section#selectSet
+		.container-fluid
+
+			section#components
+				include landingPage/components
+			section#select-set
 				include landingPage/selectSet
-			section#concept
-				include landingPage/concept
+			section#motivation
+				include landingPage/motivation
 			section#technology
 				include landingPage/technology
+			section#forecast
+				include landingPage/forecast
+			section#build-with
+				include landingPage/buildWith
 
 		footer.footer
 			include landingPage/footer

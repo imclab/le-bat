@@ -14,7 +14,7 @@ module.exports.index = function(req,res,next){
 		, populateSetsWithNames
 	], function(err){
 		res.locals.pagetitle = 'Le social sound';
-		res.render('client/landing');
+		res.render('landing/landing');
 	});
 };
 
