@@ -7,32 +7,31 @@ html
 		- var settingsJson = JSON.stringify(clientSettings)
 		| settings = !{settingsJson}
 		| </script>
-	body
-		header.jumbotron.subhead
-			div.container-fluid.page-header
-				h1 #{pagetitle}
+	body.has-static-navbar(data-spy="scroll", data-target=".navbar")
+		//- fixed top navigation
+		.navbar.navbar-fixed-top
+			include landingPage/navbar
 
-		div.container-fluid
+		//- the big header
+		header.jumbotron.masthead(style="background-color: green;")
+			include landingPage/header
 
-			div.row-fluid(style='height: 230px')
-				section#quicklinks
-					a.btn.btn-large.btn-primary(href='/listen') listen
-					a.btn.btn-large.btn-link(href='/admin') admin
+		//- the content container
+		.container
+			section#overview
+				include landingPage/overview
+			section#selectSet
+				include landingPage/selectSet
+			section#concept
+				include landingPage/concept
+			section#technology
+				include landingPage/technology
 
-			hr
-			div.row-fluid
-			
-				section#concept
-					h2 Un concept incrediblé!
-					p
-						| For reallz?
-						br
-						br
+		footer.footer
+			include landingPage/footer
 
-			hr
-			div.row-fluid
-				
-				section#concept
-					h2 Et stack de technology?
-					p
-						| Tell me more!
+		script(src="js/libs/jquery/jquery-1.9.1.min.js")
+		script(src="js/libs/bootstrap/bootstrap.min.js")
+		script(src="js/libs/bootstrap/jasny-bootstrap.min.js")
+
+		script(src="js/libs/require/require.js", data-main="js/landing/main")

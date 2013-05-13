@@ -1,0 +1,17 @@
+- if (sets.length > 0)
+
+	table#setTable.table.table-striped
+		thead
+			tr
+				th Name
+		tbody
+			for set in sets
+				include setRow
+- else
+
+	p
+		| There are no mapping sets, yet.
+	p
+		| Why don't you
+		a(href="/admin")  sign up 
+		| and create one?
