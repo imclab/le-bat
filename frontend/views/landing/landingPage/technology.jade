@@ -1,20 +1,20 @@
 .text-center
-	h2
-		| Technology
+	h1
+		| Technology stack
 .row-fluid
 	.span3
-		h3
+		h3.page-header
 			| Database
 		p
 			| persistent storage of words / mapping / users / sounds / mappingSets
 	.span3
-		h3
-			| Audio Storage and conversion
+		h3.page-header
+			| Audio Storage
 		p
 			| persistent storage of audio files
 			| conversion from * to mp3 using ffmpeg
 	.span3
-		h3
+		h3.page-header
 			| Web Server
 		p
 			| built with Node.js
@@ -22,7 +22,7 @@
 			| matching of tweets to sets
 			| delivers results via websocket
 	.span3
-		h3
+		h3.page-header
 			| Matching
 		p
 			| based on Trie / Aho-Corasick algorithm
@@ -30,12 +30,12 @@
 			| find words in text
 .row-fluid
 	.span3
-		h3
+		h3.page-header
 			| MISSING
 		p
 			| 
 	.span3
-		h3
+		h3.page-header
 			| Frontend Editor
 		p
 			| allows user authentication
@@ -43,7 +43,7 @@
 			| create mappingSets
 			| map words to soundfiles
 	.span3
-		h3
+		h3.page-header
 			| Frontend Client
 		p
 			| websocket connection
@@ -51,7 +51,7 @@
 			| computes distance and bearing between tweet and user position
 			| Web Audio API to load and playback sounds
 	.span3
-		h3
+		h3.page-header
 			| Open Source
 		p
 			| entire source code open sourced on github
