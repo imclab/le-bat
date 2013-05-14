@@ -17,3 +17,14 @@
 			li
 				a(href="#build-with")
 					| Build with
+		ul.nav.pull-right
+			- if(user)
+				li.dropdown
+					a.dropdown-toggle(href='#', data-toggle='dropdown') 
+						| #{user.name} &nbsp;
+						b.caret
+					ul.dropdown-menu
+						li: a(href='/logout') Logout
+			- else
+				li
+					a(href="/login") Login
