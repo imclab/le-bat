@@ -2,24 +2,34 @@
 	h1.page-header
 		| Motivation
 .row-fluid
-	.span12
-		p.text-center
-			| project vis narr
-			| HTW berlin
-			| real-time data
-			| human statements
-			| changing over time / trends
-			| transformation of data to natural sounds
-			| new web technology web audio
-			| sound in space
-			| new way of expoloring/consuming distance / position and content
-			| difficulties finding set of sounds
-			| watching twitter input / tracking / growing database
-			| different ideas / approaches for sounds
-			| text-to-speech (topics), animal-sounds (comparism of mass)
-			| 2 persons, already total different ideas
-			| possibility to create different sets of associations
-			| give users the possibility to create their own sets
-			| give users the possibility to share and explore each other's sets
-			| interesting for us to see how people associate certains words and sounds
-
+	.span4.offset2
+		p
+			| The initial idea for this project came up at the University
+			| of Applied Sciences Berlin. In the course 'Visualizing Narratives'
+			| we were asked to come up with a conceptional outline for a data-mapping project.
+			| After some first brainstorming discussions we collected keywords that
+			| occured high frequenlty and found out that we hade special interest
+			| in data that was at least near real-time, human generated and changing over time.
+			| We also decided to use audio as our visualizing medium. For now even without any
+			| visual aspects that relates to the audio output.
+		p
+			| Although it has been used for other popular projects it has been pretty obvious that
+			| Twitter is a good fit as a data input. The offered live streaming API gives us the
+			| chance to consume at high amount of data, which is human generated and changing over time.
+			| The fact that Twitter also offers locational information about tweets made it even more
+			| appealing for us as we thought about bringing the context of distance and position into
+			| this project, which often gets lost in the web nowadays.
+	.span4
+		p
+			| So our general idea was born. We wanted to transform incoming tweets into a soundscape
+			| by paying attention to the included locational data. Due to this spec we chose to implement
+			| this project as a web application as modern APIs give us the possibility to handle
+			| Audio and location data directly in the browser, which makes it easy to use for others.
+		p
+			| At first we built a tool that is accessing, analyzing and processing the Twitter stream.
+			| This gave us the possibility to watch specific trends and get an idea of the generated
+			| ouput. Based on that growing database we tried to find a specific, suitable set of sounds and
+			| came up with obscure approaches like using animal sounds or etc. In fact it was a hard decision.
+			| So hard that we decided to take this burden away from our shoulders and move it to the user side.
+			| This gives every listener the possibility to pick his own set of sounds and also adds a
+			| social component when you can share and explore associations defined by others.
