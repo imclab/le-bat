@@ -91,8 +91,8 @@ theme-img: ${THEME_TARGET_DIR}/img/*
 
 ${THEME_TARGET_DIR}/img/*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
 	mkdir -p ${THEME_TARGET_DIR}/img
-	cp ${BOOTSTRAP_SOURCE_DIR}/img/* ${THEME_TARGET_DIR}/img/
-	cp ./img/* ${THEME_TARGET_DIR}/img/
+	cp -a ${BOOTSTRAP_SOURCE_DIR}/img/* ${THEME_TARGET_DIR}/img/
+	cp -a ./img/* ${THEME_TARGET_DIR}/img/
 
 #
 # FONTS
@@ -102,8 +102,8 @@ theme-font: ${THEME_TARGET_DIR}/font/*
 
 ${THEME_TARGET_DIR}/font/*: ${BOOTSTRAP_SOURCE_DIR}/font/* ./font/*
 	mkdir -p ${THEME_TARGET_DIR}/font
-	cp ${BOOTSTRAP_SOURCE_DIR}/font/* ${THEME_TARGET_DIR}/font/
-	cp ./font/* ${THEME_TARGET_DIR}/font/
+	cp -a ${BOOTSTRAP_SOURCE_DIR}/font/* ${THEME_TARGET_DIR}/font/
+	cp -a ./font/* ${THEME_TARGET_DIR}/font/
 
 
 

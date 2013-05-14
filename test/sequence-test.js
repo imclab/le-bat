@@ -1,6 +1,6 @@
 var vows = require('vows')
 	, assert = require('assert')
-	, Sequence = require('../server/lib/sequence/Sequence')
+	, Sequence = require('../model/Sequence')
 	, Matcher = require('../server/lib/sequence/Matcher')
 	, Trie = require('../server/lib/sequence/Trie')
 	, AhoCorasick = require('../server/lib/sequence/AhoCorasick')
@@ -51,7 +51,7 @@ vows.describe('string').addBatch({
 		}
 		, 'searching for raw sequences with Aho-Corasick': function (topic) {
 			var matcher = new Matcher({algorithm: 'aho-corasick'});
-			topic.sequences.forEach(function(element) { matcher._addRawSequence(element) });
+			topic.sequences.forEach(function(element, i) { matcher.addSequence({id:i, content: element}) });
 			var result = matcher.search(topic.text);
 			assert.equal(result.length, 4); // twitt, witt, twitter, itter
 		}
