@@ -7,36 +7,35 @@
 			i.iconic-layers
 			| Database
 		p
-			| persistent storage of words / mapping / users / sounds / mappingSets
+			| All user supplied data, like words, mappings, users, sounds, association sets, etc., is persistently stored in a MySQL database for the probable fail-over case.
+
 	.span3
 		h3.page-header
 			i.iconic-download
 			| Audio Storage
 		p
-			| persistent storage of audio files
-			| conversion from * to mp3 using ffmpeg
+			| When files are uploaded, we run FFmpeg in order to convert your audio data to compressed mp3 files
+			| and rename them to get rid of duplicates.
 	.span3
 		h3.page-header
 			i.iconic-cloud
 			| Web Server
 		p
-			| built with Node.js
-			| monitors Twitter input
-			| matching of tweets to sets
-			| delivers results via websocket
+			| Built with Node.js and Express, our webserver connects the Twitter analysis with
+			| our matching and association algorithms. There are actually two of them,
+			| one provides the frontend you see here, and one that delivers mappings in realtime
 	.span3
 		h3.page-header
 			i.iconic-list-nested
 			| Matching
 		p
-			| based on Trie / Aho-Corasick algorithm
-			| fast efficient perfomant
-			| find words in text
+			| Tweets are split into distinct sequences and put into a specialized Trie data structure: 
+			| the Aho-Corasick trie which is really fast to detect all matches in a text.
 .row-fluid
 	.span3
 		h3.page-header
 			i.iconic-question-mark
-			| MISSING
+			| 
 		p
 			| 
 	.span3
@@ -44,24 +43,21 @@
 			i.iconic-wrench
 			| Editor
 		p
-			| allows user authentication
-			| upload sounds
-			| create mappingSets
-			| map words to soundfiles
+			| Integrated into the frontend, it allows users to upload sounds, new mappings 
+			| and all of which secured through PassportJS' custom user authentication
 	.span3
 		h3.page-header
 			i.iconic-bolt
 			| Frontend Client
 		p
-			| websocket connection
-			| geolocation API to locate user
-			| computes distance and bearing between tweet and user position
-			| Web Audio API to load and playback sounds
+			| The client listens to the server through a HTML5 websocket connection
+			| and uses geolocation API to compute the distance and bearing from tweets in relation to the user one's.
+			| The
+			| Web Audio API is used to load and playback sounds
 	.span3
 		h3.page-header
 			i.iconic-book-alt2
 			| Open Source
 		p
-			| entire source code open sourced on github
-			| works on Windows, Mac and Linux
-			strong  link here
+			| The greatest thing? The entire source code is open to be extended by you! entire source code open sourced on Github. The servers run on Windows, Mac, and Linux likewise. Awesome, right?
+			
