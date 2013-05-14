@@ -87,10 +87,10 @@ ${THEME_TARGET_DIR}/css/*.css: ${BOOTSTRAP_SOURCE_DIR}/less/*.less ${THEME_LESS_
 # IMAGES
 #
 
-theme-img: ${THEME_TARGET_DIR}/img/*
+theme-img: ${THEME_TARGET_DIR}/img/*.*
 
-${THEME_TARGET_DIR}/img/*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
-	mkdir -p ${THEME_TARGET_DIR}/img
+${THEME_TARGET_DIR}/img/*.*: ${BOOTSTRAP_SOURCE_DIR}/img/* ./img/*
+	@mkdir -p ${THEME_TARGET_DIR}/img
 	cp -a ${BOOTSTRAP_SOURCE_DIR}/img/* ${THEME_TARGET_DIR}/img/
 	cp -a ./img/* ${THEME_TARGET_DIR}/img/
 

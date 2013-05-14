@@ -79,7 +79,7 @@ define([
 	
 	exports.addRow = function(sound) {
 		var $row = $(soundRowJade({sound: sound}));
-		$('#soundTable tbody').append($row);
+		$('#soundTable tbody').prepend($row);
 		exports.initPlayers($row);
 	}
 
