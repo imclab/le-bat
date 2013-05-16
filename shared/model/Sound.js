@@ -1,4 +1,4 @@
-var Database = require('../backend/lib/Database');
+var Database = require('../db/Database');
 
 module.exports = Sound;
 

@@ -1,8 +1,8 @@
 var async = require('async')
-	, Sound = require('../../../model/Sound')
-	, SequenceSoundSet = require('../../../model/SequenceSoundSet')
-	, SequenceSoundMapping = require('../../../model/SequenceSoundMapping')
-	, User = require('../../../model/User')
+	, Sound = require('../../../shared/model/Sound')
+	, SequenceSoundSet = require('../../../shared/model/SequenceSoundSet')
+	, SequenceSoundMapping = require('../../../shared/model/SequenceSoundMapping')
+	, User = require('../../../shared/model/User')
 
 
 module.exports.listenTo = function(req,res,next){

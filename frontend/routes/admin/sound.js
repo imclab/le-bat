@@ -2,9 +2,9 @@ var fs = require('fs')
 ,	formidable = require('formidable')
 ,	async = require('async')
 ,	_ = require('underscore')
-,	Sound = require('../../../model/Sound')
-,	Tag = require('../../../model/Tag')
-,	TagSoundMapping = require('../../../model/TagSoundMapping');
+,	Sound = require('../../../shared/model/Sound')
+,	Tag = require('../../../shared/model/Tag')
+,	TagSoundMapping = require('../../../shared/model/TagSoundMapping');
 
 
 module.exports.get = function(req,res,next) {

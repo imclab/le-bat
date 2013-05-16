@@ -1,6 +1,6 @@
 var async = require('async')
-,	SequenceSoundSet = require('../../../model/SequenceSoundSet')
-,	User = require('../../../model/user');
+,	SequenceSoundSet = require('../../../shared/model/SequenceSoundSet')
+,	User = require('../../../shared/model/User');
 
 module.exports.index = function(req,res,next){
 	if(!req.db || !req.db.ready)

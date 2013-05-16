@@ -1,7 +1,7 @@
 var passport = require('passport'),
 	PassportLocalStrategy = require('passport-local').Strategy,
-	Database = require('../backend/lib/Database'),
-	User = require('../model/User'),
+	Database = require('../shared/db/Database'),
+	User = require('../shared/model/User'),
 	crypto = require('crypto')
 
 module.exports = Auth;

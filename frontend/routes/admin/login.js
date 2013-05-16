@@ -2,7 +2,7 @@ var fs = require('fs')
 ,	async = require('async')
 ,	formidable = require('formidable')
 ,	Auth = require('../../auth')
-,	User = require('../../../model/user')
+,	User = require('../../../shared/model/User')
 
 
 module.exports.index = function(req,res,next){

@@ -3,7 +3,7 @@ var _ = require('underscore')
 ,	conf = require('../config')
 ,	TwitterStream = require('./lib/TwitterStream')
 ,	WebSocketServer = require('./lib/websocketServer')
-,	Database = require('./lib/Database')
+,	Database = require('../shared/db/Database')
 ,	Store = require('./lib/sequence/Store')
 ,	ClientMapper = require('./lib/ClientMapper')
 

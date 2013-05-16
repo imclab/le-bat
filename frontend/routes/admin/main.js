@@ -1,10 +1,10 @@
 var fs = require('fs')
 ,	async = require('async')
-,	Sequence = require('../../../model/Sequence')
-,	Sound = require('../../../model/Sound')
-,	SequenceSoundSet = require('../../../model/SequenceSoundSet')
-,	Tag = require('../../../model/Tag')
-,	TagSoundMapping = require('../../../model/TagSoundMapping');
+,	Sequence = require('../../../shared/model/Sequence')
+,	Sound = require('../../../shared/model/Sound')
+,	SequenceSoundSet = require('../../../shared/model/SequenceSoundSet')
+,	Tag = require('../../../shared/model/Tag')
+,	TagSoundMapping = require('../../../shared/model/TagSoundMapping');
 
 
 module.exports.index = function(req,res,next){

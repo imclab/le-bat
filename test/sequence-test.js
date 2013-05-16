@@ -1,6 +1,6 @@
 var vows = require('vows')
 	, assert = require('assert')
-	, Sequence = require('../model/Sequence')
+	, Sequence = require('../shared/model/Sequence')
 	, Matcher = require('../backend/lib/sequence/Matcher')
 	, Trie = require('../backend/lib/sequence/Trie')
 	, AhoCorasick = require('../backend/lib/sequence/AhoCorasick')

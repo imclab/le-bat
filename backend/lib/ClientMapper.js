@@ -1,4 +1,4 @@
-var SequenceSoundMapping = require('../../model/SequenceSoundMapping')
+var SequenceSoundMapping = require('../../shared/model/SequenceSoundMapping')
 
 module.exports = ClientMapper;
 

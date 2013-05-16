@@ -1,4 +1,4 @@
-var Sequence = require('../../../model/Sequence')
+var Sequence = require('../../../shared/model/Sequence')
 ,	Splitter = require('./Splitter')
 ,	Matcher = require('./Matcher')
 ,	_ = require('underscore')

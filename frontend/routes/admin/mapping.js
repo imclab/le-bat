@@ -1,10 +1,10 @@
 var formidable = require('formidable')
 ,	async = require('async')
 ,	_ = require('underscore')
-,	Sequence = require('../../../model/Sequence')
-,	Sound = require('../../../model/Sound')
-,	SequenceSoundMapping = require('../../../model/SequenceSoundMapping')
-,	SequenceSoundSet = require('../../../model/SequenceSoundSet');
+,	Sequence = require('../../../shared/model/Sequence')
+,	Sound = require('../../../shared/model/Sound')
+,	SequenceSoundMapping = require('../../../shared/model/SequenceSoundMapping')
+,	SequenceSoundSet = require('../../../shared/model/SequenceSoundSet');
 
 
 module.exports.index = function(req,res,next){
