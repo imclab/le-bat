@@ -40,8 +40,10 @@ Store.prototype.pullDb = function() {
 			result.forEach(function(element) {
 				self.sequences[element.content] = Sequence.fromObject(element);
 			});
-			self.matcher.addSequences(result);
 			self.lastDbPull = Date.now();
+
+			console.log('Adding ' + result.length + ' sequences to Store-Matcher:');
+			self.matcher.addSequences(result);
 		});
 }
 

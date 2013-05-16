@@ -1,36 +1,56 @@
-var SequenceSoundMapping = require('../../shared/model/SequenceSoundMapping')
+var Matcher = require('./sequence/Matcher'),
+	Sequence = require('../../shared/model/Sequence')
+	SequenceSoundMapping = require('../../shared/model/SequenceSoundMapping')
 
 module.exports = ClientMapper;
 
 
-function ClientMapper(db, store, wss) {
+function ClientMapper(db, wss) {
 	this.db = db;
-	this.store = store;
 	this.wss = wss;
 
 	this.connectedSets = [];
 }
 
+
 ClientMapper.prototype.addClient = function(client) {
 	if(!this.db || !this.db.ready) 
 		return this.wss.sendMessageToClient({error: 'Database not available'});
 
-	var options = { where: [
-		{ col: 'set_id', val : client.settings.sequenceSoundSet }
-	] };
+	var connectedSet = {
+		client: client,
+		matcher: new Matcher({algorithm: 'aho-corasick'})
+	}
 
 	var self = this;
-	this.db.getAll(SequenceSoundMapping.ModelInfo, options, function(err, result) {
+
+	this.db.getAll(SequenceSoundMapping.ModelInfo, { where: [{ col: 'set_id', val : client.settings.sequenceSoundSet }] }, function(err, result) {
 		if(err) return self.wss.sendMessageToClient({error: err});
 		if(!result.length) return self.wss.sendMessageToClient({error: 'Set does not exist or has no mappings.'});
+		
 		var mappingsBySequenceId = {};
+
+		var options = { where: [] };
 		result.forEach(function(mapping) {
 			mappingsBySequenceId[mapping.sequence_id] = mapping;
-		})
-		self.connectedSets.push({
-			client: client,
-			mappingsBySequenceId: mappingsBySequenceId
+			options.where.push({
+				col: 'id',
+				val: mapping.sequence_id
+			});
+			options.where.push('or')
 		});
+		options.where.pop();
+
+		self.db.getAll(Sequence.ModelInfo, options, function(err, result) {
+			if(err) return self.wss.sendMessageToClient({error: err});
+			if(!result.length) return self.wss.sendMessageToClient({error: 'Can\'t find mapped sequences.'});
+			result.forEach(function(sequence) {
+				connectedSet.matcher.addSequence(sequence, mappingsBySequenceId[sequence.id]);
+			});
+
+			self.connectedSets.push(connectedSet);
+		});
+
 	})
 }
 
@@ -45,26 +65,15 @@ ClientMapper.prototype.removeClient = function(client) {
 
 
 ClientMapper.prototype.processTweet = function(tweet) {
-	var nodes = [];
-	try {
-		nodes = this.store.matcher.search(tweet.text);
-	} catch(err) {
-		console.log(err.stack);
-		process.exit();
-	}
-	
-	var sequences = [];
-	nodes.forEach(function(node) {
-		if(node.data.id) // only take sequences that have an id
-			sequences.push(node.data); // TODO: make this fast by returning just the data in the Trie implementation
-	})
 
 	this.connectedSets.forEach(function(connectedSet) {
 		var sequenceSoundIdsToSend = [];
-		sequences.forEach(function(sequence) {
-			if(connectedSet.mappingsBySequenceId[sequence.id])
-				sequenceSoundIdsToSend.push(connectedSet.mappingsBySequenceId[sequence.id].id);
-		});
+		
+		var nodes = connectedSet.matcher.search(tweet.text);
+		nodes.forEach(function(node) { // TODO: make this fast by returning just the data in the Trie implementation
+			sequenceSoundIdsToSend.push(node.data.id);
+		})
+
 		if(!sequenceSoundIdsToSend.length) return;
 
 		this.wss.sendMessageToClient(connectedSet.client, {

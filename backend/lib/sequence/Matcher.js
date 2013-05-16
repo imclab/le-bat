@@ -21,22 +21,31 @@ function Matcher(options) {
 
 Matcher.prototype.addSequences = function(sequenceObjects) {
 	var self = this;
-	var offset = 0;
 	var n = sequenceObjects.length;
-	console.log('Adding ' + n + ' sequences to Matcher:');
-	// Incremental Aho-Corasick needs to be broken up into work packages.
-	var worker = setInterval(function(){
-		for(var i = 0; offset<n && i<self.maxInsertSize; i++, offset++)
-			self.addSequence(sequenceObjects[offset]);
-		if(offset == n){
-			clearInterval(worker);
-			console.log('complete!')
-		}
-	}, 50);
-	var reporter = setInterval(function() {
-		if(offset == n) clearInterval(reporter);
-		else console.log(Math.round(100*offset/n) + '%');
-	}, 3000)
+	if(n < this.maxInsertSize) {
+		
+		sequenceObjects.forEach(function(sequence) {
+			this.addSequence(sequence);
+		}, this);
+
+	} else {
+		// Incremental Aho-Corasick needs to be broken up into work packages.
+		var offset = 0;
+		var worker = setInterval(function(){
+			for(var i = 0; offset<n && i<self.maxInsertSize; i++, offset++)
+				self.addSequence(sequenceObjects[offset]);
+			if(offset == n){
+				clearInterval(worker);
+				console.log('complete!');
+			}
+		}, 50);
+
+		var reporter = setInterval(function() {
+			if(offset == n) clearInterval(reporter);
+			else console.log(Math.round(100*offset/n) + '%');
+		}, 3000);
+	}
+	
 }
 
 
@@ -47,6 +56,6 @@ Matcher.prototype.search = function(text) {
 }
 
 
-Matcher.prototype.addSequence = function(sequence) {
-	this.trie.add(sequence.content, sequence);
+Matcher.prototype.addSequence = function(sequence, data) {
+	this.trie.add(sequence.content, data ? data : sequence);
 }

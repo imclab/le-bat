@@ -79,7 +79,7 @@ tweetStream.on('tweet', function(data) {
 sequenceStore.setDb(db);
 
 
-var clientMapper = new ClientMapper(db, sequenceStore, websocket);
+var clientMapper = new ClientMapper(db, websocket);
 
 tweetStream.on('tweet', function(data) {
 	try{
