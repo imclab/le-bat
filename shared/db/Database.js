@@ -28,14 +28,12 @@ Database.prototype.init = function() {
 		else if(result.length == 0) {
 			console.log("Database tables not found.");
 			self._installSchema();
-			self.connection.end();
 		} else {
 			self.connection.query('SELECT value FROM var WHERE name = ?', ['schema_version'], function(err, result) {
 				if(err) self.emit('error', err);
 				else if(result.length == 0) {
 					console.log("Missing schema version.");
 					self._installSchema();
-					self.connection.end();
 				} else {
 					if(result[0].value < pjson.dbSchemaVersion) {
 						self.emit('error', 'Database schema mismatch, please update from repository.' + os.EOL
