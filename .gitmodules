@@ -1,3 +1,6 @@
 [submodule "frontend/theme/bootstrap"]
 	path = frontend/theme/bootstrap
 	url = git://github.com/jasny/bootstrap.git
+[submodule "shared/lib/strint"]
+	path = shared/lib/strint
+	url = git://github.com/rauschma/strint.git

@@ -4,6 +4,7 @@ var mysql = require('mysql')
 	, events = require('events')
 	, os = require('os')
 	, _ = require('underscore')
+	, strint = require("../lib/strint/strint")
 	, pjson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 
 module.exports = Database;
@@ -94,11 +95,13 @@ Database.prototype.setAll = function(modelInfo, objects, callback) {
 	
 	this.connection.query(query, function(err, result) {
 		if(err){ self.emit('error', err); return; }
-		var useStrint = typeof result.insertId == 'string';
+		// We use strint if the auto incremented is be too big
+		var useStrint = typeof result.insertId == 'string' || result.insertId + result.affectedRows == Infinity;
 		// insert id for multiple rows returns FIRST inserted id
 		// see http://dba.stackexchange.com/questions/21181/is-mysqls-last-insert-id-function-guaranteed-to-be-correct
 		for(var i=0, n=objects.length; i<n; ++i) 
-			if(objects[i][modelInfo.autoIncrement] == null) objects[i][modelInfo.autoIncrement] = result.insertId++;
+			if(objects[i][modelInfo.autoIncrement] == null) 
+				objects[i][modelInfo.autoIncrement] = useStrint ? result.insertId = strint.add(''+result.insertId, '1') : result.insertId++;
 		callback.call(this, err, result);
 	});
 }
