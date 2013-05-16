@@ -1,6 +1,5 @@
 var Sequence = require('../../../shared/model/Sequence')
 ,	Splitter = require('./Splitter')
-,	Matcher = require('./Matcher')
 ,	_ = require('underscore')
 
 module.exports = Store;
@@ -9,7 +8,6 @@ function Store() {
 	this.splitter = new Splitter({ignore: ['usernames', 'urls', 'punctuation', 'single_letters']});
 
 	this.sequences = {};
-	this.matcher = new Matcher({algorithm: 'aho-corasick'});
 
 	this.localUpdates = {};
 	this.lastLocalUpdate = 0;
@@ -17,6 +15,8 @@ function Store() {
 	this.db = null;
 	this.lastDbSave = 0;
 	this.lastDbPull = 0;
+
+	// this.matcher = new Matcher({algorithm: 'aho-corasick'});
 }
 
 
@@ -42,8 +42,8 @@ Store.prototype.pullDb = function() {
 			});
 			self.lastDbPull = Date.now();
 
-			console.log('Adding ' + result.length + ' sequences to Store-Matcher:');
-			self.matcher.addSequences(result);
+			// console.log('Adding ' + result.length + ' sequences to Store-Matcher:');
+			// self.matcher.addSequences(result);
 		});
 }
 
@@ -75,8 +75,9 @@ Store.prototype.addRawSequences = function(sequences, timestamp) {
 			this.localUpdates[element] = this.sequences[element];
 		} else {
 			this.sequences[element] = new Sequence(null, element, timestamp, 1, false);
-			this.matcher.addSequence(this.sequences[element]);
 			this.localUpdates[element] = this.sequences[element];
+
+			// this.matcher.addSequence(this.sequences[element]);
 		}
 	}, this);
 };
