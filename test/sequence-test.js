@@ -1,10 +1,10 @@
 var vows = require('vows')
 	, assert = require('assert')
 	, Sequence = require('../model/Sequence')
-	, Matcher = require('../server/lib/sequence/Matcher')
-	, Trie = require('../server/lib/sequence/Trie')
-	, AhoCorasick = require('../server/lib/sequence/AhoCorasick')
-	, Splitter = require('../server/lib/sequence/Splitter')
+	, Matcher = require('../backend/lib/sequence/Matcher')
+	, Trie = require('../backend/lib/sequence/Trie')
+	, AhoCorasick = require('../backend/lib/sequence/AhoCorasick')
+	, Splitter = require('../backend/lib/sequence/Splitter')
 
 
 vows.describe('string').addBatch({

@@ -7,7 +7,7 @@ var tweetServer = new(forever.Monitor)('server.js',{
     , 'spinSleepTime': 2000  
     , 'command': 'node'      
     , 'options': []          
-    , 'sourceDir': './server'
+    , 'sourceDir': './backend'
 });
 
 tweetServer.on('start',function(process,data){
@@ -17,7 +17,7 @@ tweetServer.on('start',function(process,data){
 tweetServer.start();
 
 
-var frontend = new(forever.Monitor)('frontend.js',{
+var frontend = new(forever.Monitor)('server.js',{
     'silent': false        
     , 'max' : 1
     , 'minUptime': 3000      

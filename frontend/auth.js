@@ -1,6 +1,6 @@
 var passport = require('passport'),
 	PassportLocalStrategy = require('passport-local').Strategy,
-	Database = require('../server/lib/Database'),
+	Database = require('../backend/lib/Database'),
 	User = require('../model/User'),
 	crypto = require('crypto')
 

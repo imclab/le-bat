@@ -1,7 +1,7 @@
 var vows = require('vows')
 	, assert = require('assert')
-	, Trie = require('../server/lib/sequence/Trie')
-	, AhoCorasick = require('../server/lib/sequence/AhoCorasick')
+	, Trie = require('../backend/lib/sequence/Trie')
+	, AhoCorasick = require('../backend/lib/sequence/AhoCorasick')
 
 
 vows.describe('Trie').addBatch({
