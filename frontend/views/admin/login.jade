@@ -62,5 +62,6 @@ html
 
 		script
 			$(function() {
-				$('#forms a:first').tab('show');
+				if(window.location.hash)
+					$('[href="'+window.location.hash+'"]').tab('show');
 			})

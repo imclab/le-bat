@@ -6,12 +6,6 @@ var fs = require('fs')
 
 
 module.exports.index = function(req,res,next){
-	res.locals.messages = false;
-	if(req.session.messages) {
-		res.locals.messages = req.session.messages;
-		req.session.messages = false;
-	}
-		
 	res.render('admin/login');
 };
 
@@ -34,7 +28,9 @@ module.exports.register = function(req,res,next) {
 			, authenticate
 		],function(err){
 			if(err){
-				console.log(err.error);
+				if(err.error) console.log(err.error);
+				req.session.messages = [err.message];
+				return res.redirect('/login#register');
 				return res.send(err.httpCode, err.message);
 			} else{
 				return res.redirect('/admin');
@@ -46,11 +42,12 @@ module.exports.register = function(req,res,next) {
 
 
 function validate(req,res,fields,next) {
-	if(!fields.username) return res.send(400, 'Username required');
-	if(!fields.password) return res.send(400, 'Password required');
+	if(!fields.username) return next({httpCode: 400, message: 'Username required.'});
+	if(!fields.password) return next({httpCode: 400, message: 'Password required.'});
+	if(fields.password != fields.password_confirm) next({httpCode: 400, message: 'Passwords don\'t match.'});
 	req.db.getAll(User.ModelInfo, { where: [{ col: 'name', val: fields.username }] }, function(err, result) {
 		if(err) return next(err);
-		if(result.length) return res.send(400, 'Username already exists.');
+		if(result.length) return next({httpCode: 400, message: 'User already exists.'});
 		next(null,req,res,fields);
 	})
 }
@@ -68,11 +65,11 @@ function saveUser(req,res,fields,next) {
 	});
 
 	if(!req.db || !req.db.ready) 
-		return done({error: 'Database not available', httpCode: 500, message: 'Database not available'});
+		return next({error: 'Database not available', httpCode: 500, message: 'Database not available'});
 
 	req.db.setAll(User.ModelInfo, [user], function(err, result) {
 		if(err) 
-			return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
+			return next({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
 		res.locals.user = user;
 		return next(null,req,res,fields);
 	});

@@ -10,6 +10,12 @@ html
 		
 	body.has-static-navbar
 		div#page-alert.page-alert
+			- if(messages)
+				for message in messages
+					- if(message != 'Not Found')
+						.alert.alert-error
+							| #{message}
+
 
 		div.container-fluid
 			div.row-fluid

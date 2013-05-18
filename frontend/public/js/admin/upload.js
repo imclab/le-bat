@@ -39,9 +39,10 @@ define([
 
 		xhr.onload = function(){
 			var success = this.status == 200;
-			showResponseInfo(success, success ? 'File uploaded successfully' : this.response);
-			if(success) 
+			if(success) {
 				sound.addRow($.parseJSON(this.response));
+				$progressBarContainer.hide();
+			}
 			self.button('reset');
 		};
 

@@ -80,11 +80,13 @@ module.exports.editSet = function(req, res, next) {
 			}
 			, validateSet
 			, saveSet
-		], function(err, req, res){
+		], function(err){
 			if(err){
-				console.log(err.error);
-				res.send(err.httpCode, err.message);
+				if(err.error) console.log(err.error);
+				req.session.messages = [err.message];
+				return res.redirect('/admin');
 			} else{
+				return res.redirect('/admin/mapping/'+res.locals.sets[0].id);
 				return res.send(200, JSON.stringify({
 					sets: res.locals.sets
 				}));
@@ -95,27 +97,31 @@ module.exports.editSet = function(req, res, next) {
 
 
 function validateSet(req,res,fields,next) {
-	if(!fields.name) return res.send(400, 'Missing field: name');
+	if(!fields.name) return next({httpCode:400, message: 'Missing field: name'});
 
-	var options = { where: [
-		{ col: 'id', val:fields.id }, 'and', { col:'user_id', val: req.user.id }, 'and', {col: 'name', val: fields.name }
-	] };
+	if(!fields.id) { // adding a set
+		var options = { where: [
+			{ col:'user_id', val: req.user.id }, 'and', {col: 'name', val: fields.name }
+		] };
 
-	req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
-		if(err) return res.send(500, err);
-		if(result.length) return res.send(412, 'A set with that name already exists.');
-		if(fields.id) {	
-			options.pop();
-			options.pop();
-			req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
-				if(err) return res.send(500, err);
-				if(!result.length) return res.send(412, 'You can\'t sets that are not existing or don\'t belong to you.');
-				result[0].updated = Date.now();
-				res.locals.sets = result;
-				next(null, req, res, fields);
-			});
-		} else next(null, req, res, fields);
-	});
+		req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
+			if(err) return next({error:err, httpCode: 500, message: JSON.stringify(err)});
+			if(result.length) return next({httpCode:412, message: 'A set with that name already exists.'});
+			if(fields.id) {	
+				options.pop();
+				options.pop();
+				req.db.getAll(SequenceSoundSet.ModelInfo, options, function(err, result) {
+					if(err) return res.send(500, err);
+					if(!result.length) return next({httpCode: 412, message: 'You can\'t sets that are not existing or don\'t belong to you.'});
+					result[0].updated = Date.now();
+					res.locals.sets = result;
+					next(null, req, res, fields);
+				});
+			} else next(null, req, res, fields);
+		});
+	} else {
+		next({error: 'editing set not implemented', httpCode: 500, message: 'Editing set information is not implemented.'})
+	}
 }
 
 function saveSet(req,res,fields,next) {

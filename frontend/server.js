@@ -46,6 +46,13 @@ app.configure(function(){
 		};
 		if(!res.locals.user)
 			res.locals.user = req.user;	
+
+		res.locals.messages = false;
+		if(req.session.messages) {
+			res.locals.messages = req.session.messages;
+			req.session.messages = false;
+		}
+		
 		next();
 	})
 
