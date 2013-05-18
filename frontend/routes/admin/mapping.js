@@ -42,7 +42,7 @@ function getSequenceSoundSets(req, res, done) {
 function getSequences(req, res, done) {
 	var options = {
 		order: [{
-			col: 'total_count',
+			col: 'split_count',
 			desc: true
 		}],
 		limit: {
@@ -131,7 +131,8 @@ function saveSet(req,res,fields,next) {
 			user_id: req.user.id,
 			name: fields.name,
 			created: Date.now(),
-			updated: Date.now()
+			updated: Date.now(),
+			options: {} // TODO
 		})];
 	}
 	req.db.setAll(SequenceSoundSet.ModelInfo, res.locals.sets, function(err, result) {
@@ -286,7 +287,8 @@ function saveMapping(req,res,fields,done){
 		id: null,
 		sequence_id: res.locals.sequence[0].id,
 		sound_id: res.locals.sound[0].id,
-		set_id: req.params.setId
+		set_id: req.params.setId,
+		options: {} // TODO
 	})
 	req.db.setAll(SequenceSoundMapping.ModelInfo, [mapping], function(err,result){
 		if(err) return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});

@@ -30,7 +30,12 @@ Splitter.prototype.split = function(text) {
 	this.ignore.forEach(function(element) {
 		text = text.replace(XRegExp(Splitter.patterns[element], 'ig'), ' ');
 	})
-	return text.replace(/\s+/ig, " ").trim().split(" ");
+	var result = text.replace(/\s+/ig, " ").trim().split(" ");
+	if(result.length)
+		for(var i=result.length; i>=0; --i) {
+			if(!result[i] || !result[i].trim()) result.splice(i,1);
+		}
+	return result;
 	// Doing all in one pattern via OR groups doesn't match single letters
 	// Needs revision:
 	// return text.replace(this.ignorePattern, " ").replace(/\s+/ig, " ").trim().split(" ");

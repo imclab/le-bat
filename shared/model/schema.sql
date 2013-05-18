@@ -1,4 +1,4 @@
--- Generation Time: May 13, 2013 at 11:26 AM
+-- Generation Time: May 18, 2013 at 07:00 PM
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -12,10 +12,13 @@ CREATE TABLE IF NOT EXISTS `sequence` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(60) NOT NULL,
   `last_update` bigint(20) unsigned NOT NULL,
-  `total_count` bigint(20) unsigned NOT NULL,
+  `split_count` bigint(20) unsigned NOT NULL,
+  `match_count` bigint(20) unsigned NOT NULL,
   `blocked` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `content` (`content`)
+  UNIQUE KEY `content` (`content`),
+  KEY `match_count` (`match_count`),
+  KEY `split_count` (`split_count`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Character sequences to look out for in tweets.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -29,10 +32,11 @@ CREATE TABLE IF NOT EXISTS `sequence_sound` (
   `sequence_id` int(10) unsigned NOT NULL,
   `sound_id` int(10) unsigned NOT NULL,
   `set_id` int(10) unsigned NOT NULL,
+  `options` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sequence_id` (`sequence_id`),
   KEY `set_id` (`set_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Associates character sequences with sounds.' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Associates character sequences with sounds.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -46,9 +50,10 @@ CREATE TABLE IF NOT EXISTS `sequence_sound_set` (
   `name` varchar(60) NOT NULL,
   `created` bigint(20) unsigned NOT NULL,
   `updated` bigint(20) unsigned NOT NULL,
+  `options` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 

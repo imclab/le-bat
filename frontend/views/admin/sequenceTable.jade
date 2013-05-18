@@ -2,7 +2,8 @@ table#sequenceTable.table.table-striped
 	thead
 		tr
 			th Sequence
-			th Count
+			th Split Count
+			th Match Count
 			th Blocked
 			th Mappings
 	tbody
@@ -12,7 +13,10 @@ table#sequenceTable.table.table-striped
 					| #{sequence.content}
 
 				td
-					| #{sequence.total_count}
+					| #{sequence.split_count}
+
+				td
+					| #{sequence.match_count}
 
 				td
 					.btn-group.blocked(data-toggle='buttons-radio', data-value='#{sequence.blocked}')

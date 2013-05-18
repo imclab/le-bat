@@ -51,7 +51,7 @@ Database.prototype.init = function() {
 }
 
 
-Database.prototype.getVars = function(names, callbck) {
+Database.prototype.getVars = function(names, callback) {
 	var self = this;
 	var options = {where:[]};
 	if(typeof names === 'string') names = [names];
@@ -60,18 +60,14 @@ Database.prototype.getVars = function(names, callbck) {
 		options.where.push('or');
 	});
 	options.where.pop();
-	this.getAll(Database.Var.ModelInfo, options, function(err, result) {
-		console.log(err, result);
-	});
+	this.getAll(Database.Var.ModelInfo, options, callback);
 }
 
 
 Database.prototype.setVars = function(obj, callback) {
 	var vars = [];
 	for(var name in obj) vars.push({ name: name, value: obj[name] });
-	this.setAll(Database.Var.ModelInfo, vars, function(err, result) {
-		console.log(err, result);
-	})
+	this.setAll(Database.Var.ModelInfo, vars, callback);
 }
 
 
@@ -124,7 +120,8 @@ Database.prototype.setAll = function(modelInfo, objects, callback) {
 		for(var i=0, n=objects.length; i<n; ++i) 
 			if(objects[i][modelInfo.autoIncrement] == null) 
 				objects[i][modelInfo.autoIncrement] = useStrint ? result.insertId = strint.add(''+result.insertId, '1') : result.insertId++;
-		callback.call(this, err, result);
+		if(callback) 
+			callback.call(this, err, result);
 	});
 }
 

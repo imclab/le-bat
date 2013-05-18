@@ -132,6 +132,7 @@ Trie.prototype.search = function(sequence, gotoFn, failFn) {
 		}
 		result[i] = { 
 			sequence: sequence.slice(element.tail - length, element.tail + 1),
+			textPos: element.tail - length,
 			data: element.node.data,
 			node: element.node
 		};
