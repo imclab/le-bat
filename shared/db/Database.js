@@ -51,6 +51,30 @@ Database.prototype.init = function() {
 }
 
 
+Database.prototype.getVars = function(names, callbck) {
+	var self = this;
+	var options = {where:[]};
+	if(typeof names === 'string') names = [names];
+	names.forEach(function(name) {
+		options.where.push({ col: 'name', val: name });
+		options.where.push('or');
+	});
+	options.where.pop();
+	this.getAll(Database.Var.ModelInfo, options, function(err, result) {
+		console.log(err, result);
+	});
+}
+
+
+Database.prototype.setVars = function(obj, callback) {
+	var vars = [];
+	for(var name in obj) vars.push({ name: name, value: obj[name] });
+	this.setAll(Database.Var.ModelInfo, vars, function(err, result) {
+		console.log(err, result);
+	})
+}
+
+
 Database.prototype.getAll = function(modelInfo, options, callback) {
 	if(!(modelInfo instanceof Database.ModelInfo)) {
 		this.emit('error', 'Please provide a valid Database.ModelInfo');
@@ -227,3 +251,15 @@ Database.ModelInfo = function(options) {
 	this.primary = options.primary;
 	this.unique = [].concat(options.unique);
 }
+
+
+Database.Var = function(name, value) {
+	this.name = name;
+	this.value = value;
+}
+
+Database.Var.ModelInfo = new Database.ModelInfo({
+	tableName: 'var',
+	primary: 'name',
+	unique: 'name'
+})
