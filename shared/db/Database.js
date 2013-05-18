@@ -12,9 +12,9 @@ module.exports = Database;
 
 function Database(options) {
 	if(!options.mysql) this.emit('error', 'Missing MySQL configuration.')
-	this.options = options;
+	this.options = _.defaults(options.mysql, { supportBigNumbers: true });
 	this.ready = false;
-	this.connection = mysql.createConnection(_.defaults(options.mysql, { supportBigNumbers: true }));
+	this.connection = mysql.createConnection(this.options);
 	this._registerEvents();
 }
 util.inherits(Database, events.EventEmitter);
@@ -226,12 +226,30 @@ Database.prototype.shutdown = function() {
 }
 
 
+Database.prototype._reconnect = function() {
+	console.log('Reconnecting database.');
+	this.connection = mysql.createConnection(this.connection.config);
+	this._registerEvents()
+	this.connection.connect();
+}
+
 Database.prototype._registerEvents = function(){
 	var self = this;
 	this.connection.on('error', function(err) {
 		console.error('Database connection error', err);
-		self.emit('error', err);
-	})
+		
+		if (!err.fatal) 
+			return;
+
+		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+			console.log('Lost database connection:', err.stack);
+			self._reconnect();
+			return;
+		}
+		
+		return self.emit('error', err);
+	});
+
 	self.on('ready', function() {
 		process.on('exit', function() {
 			self.shutdown();
