@@ -195,7 +195,7 @@ Database.prototype._installSchema = function() {
 	var installerConnection = mysql.createConnection(
 		require('underscore').defaults(this.options.mysql, { multipleStatements: true })
 	);
-	var schema = fs.readFileSync('model/schema.sql');
+	var schema = fs.readFileSync('shared/model/schema.sql');
 	installerConnection.query(schema.toString('utf8'), function(err, result) {
 		if(err) self.emit('error', err);
 		else console.log("Schema installation complete. Setting version.");
