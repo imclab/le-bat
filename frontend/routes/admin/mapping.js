@@ -132,7 +132,7 @@ function saveSet(req,res,fields,next) {
 			name: fields.name,
 			created: Date.now(),
 			updated: Date.now(),
-			options: {} // TODO
+			options: 'temporary placeholder #14'
 		})];
 	}
 	req.db.setAll(SequenceSoundSet.ModelInfo, res.locals.sets, function(err, result) {
