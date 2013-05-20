@@ -288,7 +288,7 @@ function saveMapping(req,res,fields,done){
 		sequence_id: res.locals.sequence[0].id,
 		sound_id: res.locals.sound[0].id,
 		set_id: req.params.setId,
-		options: {} // TODO
+		options: 'temporary placeholder #14'
 	})
 	req.db.setAll(SequenceSoundMapping.ModelInfo, [mapping], function(err,result){
 		if(err) return done({error : err, httpCode : 500, message : 'Could not save information to database due to an intenal error.'});
