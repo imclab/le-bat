@@ -7,30 +7,32 @@
 			i.iconic-layers
 			| Database
 		p
-			| All user supplied data, like words, mappings, users, sounds, association sets, etc., is persistently stored in a MySQL database for the probable fail-over case.
+			| All authentication and data aggregated at runtime, like words, sounds, association sets, etc., is persistently stored in a MySQL database where it can be retrieved from, even if one of the webservers crashes 
 
 	.span3
 		h3.page-header
 			i.iconic-download
 			| Storage
 		p
-			| When files are uploaded, we run FFmpeg in order to convert your audio data to compressed mp3 files
-			| and rename them to get rid of duplicates.
+			| When files are uploaded, we run FFmpeg in order to convert your audio data to compressed mp3 files.
+			| We also check for duplicates, and allow you to tag sounds.
+
 	.span3
 		h3.page-header
 			i.iconic-cloud
 			| Server
 		p
-			| Built with Node.js and Express, our webserver connects the Twitter analysis with
-			| our matching and association algorithms. There are actually two of them,
-			| one provides the frontend you see here, and one that delivers mappings in realtime
+			| Built with Node.js and Express, our webservers connect the Twitter analysis with
+			| our matching and association algorithms. 
+			| One server provides the frontend you see here, and the other delivers mappings in realtime to the user.
 	.span3
 		h3.page-header
 			i.iconic-list-nested
 			| Matching
 		p
 			| Tweets are split into distinct sequences and put into a specialized Trie data structure: 
-			| the Aho-Corasick trie which is really fast to detect all matches in a text.
+			| the Aho-Corasick trie which is blazingly fast and detects all matches in a text, even if they are buried within other words.
+
 .row-fluid
 	
 	.span3
@@ -38,23 +40,24 @@
 			i.iconic-wrench
 			| Editor
 		p
-			| Integrated into the frontend, it allows users to upload sounds, new mappings 
-			| and all of which secured through PassportJS' custom user authentication
+			| Integrated into the frontend, the editor allows users to upload sounds, make associations and manage isolated mapping sets. 
+			| All of this is secured by PassportJS' user authentication, with salted SHA512 password encryption.
 	.span3
 		h3.page-header
 			i.iconic-bolt
 			| Client
 		p
-			| The client listens to the server through a HTML5 websocket connection
-			| and uses geolocation API to compute the distance and bearing from tweets in relation to the user one's.
-			| The
-			| Web Audio API is used to load and playback sounds
+			| The browser listens to the server through an HTML5 websocket connection
+			| and uses the Geolocation API to compute the distance and bearing from tweets in relation to the user's one's.
+			| With the Web Audio API we load and playback sounds around you.
 	.span3
 		h3.page-header
 			i.iconic-book-alt2
 			| Open Source
 		p
-			| The greatest thing? The entire source code is open to be extended by you! entire source code open sourced on Github. The servers run on Windows, Mac, and Linux likewise. Awesome, right?
+			| The greatest thing? The entire source code is open and available on 
+			a(href="https://github.com/fde31/tweeting-natural") Github 
+			|  where you can download and extend the system -- The servers run on Windows, Mac, and Linux likewise. Awesome, right?
 			
 	.span3
 		h3.page-header
