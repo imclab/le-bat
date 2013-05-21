@@ -33,16 +33,31 @@ html
 
 			div.row-fluid
 				div.span8
+					section#mappings
+						div.page-header
+							h3 Already mapped
+						include mappingTable
+
+				div.span4
+					section#mapping(data-spy='affix')
+						div.page-header
+							h3 New Mapping
+						p
+							| Scroll through the sequences below and click the&nbsp;
+							button.btn.btn-mini.disabled: i.iconic-plus
+							| &nbsp;
+							| button to create a mapping.
+						include mappingForm
+
+
+			div.row-fluid
+				div.span8
 					section#sequences
 						div.page-header
 							h3 Some sequences
 						include sequenceTable
 
-				div.span4
-					section#mapping
-						div.page-header
-							h3 Mapping
-						include mappingForm
+				
 
 				
 
@@ -51,3 +66,15 @@ html
 		script(src="/js/libs/bootstrap/jasny-bootstrap.min.js")
 
 		script(src="/js/libs/require/require.js", data-main="/js/admin/main")
+
+		script
+			$('[data-spy="affix"]').each(function () {
+				var $this = $(this);
+				$this.css('width', $this.parent().css('width'));
+				$(window).resize(function(){
+					$this.css('width', $this.parent().css('width'));
+				});
+				$this.affix({
+					offset: $this.position()
+				})
+			});

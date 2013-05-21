@@ -4,7 +4,8 @@ var formidable = require('formidable')
 ,	Sequence = require('../../../shared/model/Sequence')
 ,	Sound = require('../../../shared/model/Sound')
 ,	SequenceSoundMapping = require('../../../shared/model/SequenceSoundMapping')
-,	SequenceSoundSet = require('../../../shared/model/SequenceSoundSet');
+,	SequenceSoundSet = require('../../../shared/model/SequenceSoundSet')
+,	SequenceSound = require('../../../shared/model/SequenceSoundMapping');
 
 
 module.exports.index = function(req,res,next){
@@ -18,6 +19,9 @@ module.exports.index = function(req,res,next){
 				return done(null, req, res)
 			}
 			, getSequenceSoundSets
+			, getSequenceSoundMappings
+			, getSoundsForMappings
+			, getJoinedSequenceSounds
 			, getSequences
 		],function(err){
 			if(err){
@@ -38,6 +42,73 @@ function getSequenceSoundSets(req, res, done) {
 		done(null, req, res);
 	})
 }
+
+function getSequenceSoundMappings(req, res, done) {
+	req.db.getAll(SequenceSoundMapping.ModelInfo, { where: [{ col: 'set_id', val: req.params.setId }] }, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sequenceSoundMappings = result;
+		done(null, req, res);
+	})
+}
+
+
+function getSoundsForMappings(req, res, done) {
+	var options = { where: [] };
+	res.locals.sequenceSoundMappings.forEach(function(mapping) {
+		options.where.push({
+			col: 'id',
+			val: mapping.sound_id
+		});
+		options.where.push('or');
+	});
+	if(options.where.length) options.where.pop(); // removing last or
+
+	req.db.getAll(Sound.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sounds = result;
+		res.locals.soundsById = {};
+		for(var i=0; i<result.length; ++i) {
+			res.locals.soundsById[result[i].id] = result[i];
+		}
+		done(null, req, res);
+	})
+}
+
+
+function getJoinedSequenceSounds(req, res, done) {
+	if(!res.locals.sequenceSoundMappings.length)
+		done(null, req, res);
+
+	var options = { where: [] };
+	res.locals.sequenceSoundMappings.forEach(function(mapping) {
+		options.where.push({
+			col: 'id',
+			val: mapping.sequence_id
+		});
+		options.where.push('or');
+	});
+	if(options.where.length) options.where.pop(); // removing last or
+
+	req.db.getAll(Sequence.ModelInfo, options, function(err, result) {
+		if(err) return res.send(500, err);
+		res.locals.sequenceSoundMappingsSequences = result;
+		res.locals.sequenceSoundMappingsSequencesById = {};
+		for(var i=0; i<result.length; ++i) {
+			res.locals.sequenceSoundMappingsSequencesById[result[i].id] = result[i];
+		}
+
+		res.locals.sequenceSoundMappingsJoined = [];
+		for(var i=0; i<res.locals.sequenceSoundMappings.length; ++i) 
+			res.locals.sequenceSoundMappingsJoined.push({
+				id: res.locals.sequenceSoundMappings[i].id,
+				sequence: res.locals.sequenceSoundMappingsSequencesById[res.locals.sequenceSoundMappings[i].sequence_id],
+				sound: res.locals.soundsById[res.locals.sequenceSoundMappings[i].sound_id]
+			})
+
+		done(null, req, res);
+	})
+}
+
 
 function getSequences(req, res, done) {
 	var options = {

@@ -1,0 +1,23 @@
+table#sequenceSoundTable.table.table-striped
+	thead
+		tr
+			th Sequence
+			th Audio
+			th Sound Info
+	tbody
+		- if(sequenceSoundMappingsJoined.length > 0)
+			for mapping in sequenceSoundMappingsJoined
+				tr.sequenceRow(id='mapping_#{mapping.id}', data-id='#{mapping.id}')
+					td
+						strong #{mapping.sequence.content}
+
+					td
+						sound = mapping.sound
+						include ./soundPlayer
+
+					td
+						strong #{mapping.sound.name}
+						|  by #{mapping.sound.author} (#{mapping.sound.license} license) from 
+						a(href='#{mapping.sound.source}') #{mapping.sound.source}
+
+					
