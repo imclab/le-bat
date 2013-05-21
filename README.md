@@ -1,11 +1,11 @@
-# Le Bat!
+# Le Bat
 
 This is a student project done in 2013 at the `University of Applied Sciences in Berlin`. The task was to come up with an innovative way of data mapping.
 
 The goal of this project is to take real-time input from the Twitter Streaming API and transform the incoming data to a sample based soundscape. This mapping should be based on a defined database, which maps words to particular sounds. Furthermore any location data received from Twitter should be used to place the sound on an intentional spot in the soundscape of the user. This mapping is relative to the actual geo location of the user. The entire project should mainly be seen as a web based sound installation.
 
 
-## development setup
+## Development setup
 
 1. make sure you have `node` and `npm` installed
 2. run the `npm install` command
